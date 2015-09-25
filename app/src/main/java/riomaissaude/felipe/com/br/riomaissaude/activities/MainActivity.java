@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         // Declare a variable for the cluster manager.
 
         // Position the map.
-        //this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
+        this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.9112335, -43.448334), 10));
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
@@ -327,22 +327,31 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                progressDialog = ProgressDialog.show(MainActivity.this, "Aguarde...", "Adicionando estabelecimentos no mapa...");
-                                progressDialog.setCanceledOnTouchOutside(false);
 
                                 for (int i = 0; i < seletedItems.size(); i++) {
                                     itensSelecionados.add(String
-                                            .valueOf(items[(int) seletedItems
-                                                    .get(i)]));
+                                            .valueOf(items[(int) seletedItems.get(i)]));
                                 }
 
-                                listaEstabelecimentos = new ArrayList<Estabelecimento>();
-                                for (String itemSelecionado : itensSelecionados) {
-                                    for (Estabelecimento e: listaEstabelecimentosCopia) {
-                                        if (StringUtil.retirarAcentosDaPalavra(itemSelecionado.trim()).equalsIgnoreCase(StringUtil.retirarAcentosDaPalavra(e.getBairro())))
-                                            listaEstabelecimentos.add(e);
+                                if (itensSelecionados.contains("Todos")) {
+                                    listaEstabelecimentos = listaEstabelecimentosCopia;
+                                }
+                                else {
+                                    listaEstabelecimentos = new ArrayList<Estabelecimento>();
+                                    for (String itemSelecionado : itensSelecionados) {
+                                        for (Estabelecimento e: listaEstabelecimentosCopia) {
+                                            if (StringUtil.retirarAcentosDaPalavra(itemSelecionado.trim()).equalsIgnoreCase(StringUtil.retirarAcentosDaPalavra(e.getBairro())))
+                                                listaEstabelecimentos.add(e);
+                                        }
                                     }
                                 }
+
+
+
+                                if (listaEstabelecimentos.size() == 1)
+                                    Toast.makeText(MainActivity.this, listaEstabelecimentos.size() + " estabelecimento encontrado.", Toast.LENGTH_LONG).show();
+                                else
+                                    Toast.makeText(MainActivity.this, listaEstabelecimentos.size() + " estabelecimentos encontrados.", Toast.LENGTH_LONG).show();
 
                                 setUpClusterer();
                             }
