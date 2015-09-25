@@ -1,0 +1,52 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".DetalheOcorrencia">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cinza_claro"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize" />
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Como Chegar"
+            android:onClick="gerenciarBotoes"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:color/holo_red_light"
+            android:textColor="@android:color/white"
+            android:id="@+id/btnComoChegar"
+            android:layout_gravity="center_horizontal" />
+
+        <include layout="@layout/card_detalhe_estabelecimento_titulo" />
+
+        <include layout="@layout/card_detalhe_estabelecimento_telefone" />
+
+        <include layout="@layout/card_detalhe_estabelecimento_endereco" />
+
+        <include layout="@layout/card_detalhe_estabelecimento_tipo" />
+
+    </LinearLayout>
+
+</ScrollView>
