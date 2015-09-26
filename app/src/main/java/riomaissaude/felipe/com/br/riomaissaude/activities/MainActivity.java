@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -59,9 +61,13 @@ public class MainActivity extends AppCompatActivity {
 
         this.bairros = this.database.getAllBairros();
 
+        for (String b :this.bairros) {
+            Log.d(b, b);
+        }
+
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        this.toolbar.setNavigationIcon(R.mipmap.ic_launcher);
         this.toolbar.setTitle(getResources().getString(R.string.app_name));
+        this.toolbar.setLogo(R.mipmap.ic_launcher);
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
@@ -252,6 +258,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            new MaterialDialog.Builder(MainActivity.this)
+                    .title("Aguarde")
+                    .content("Recuperando estabelecimentos...")
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(true)
+                    .show();
             startActivity(new Intent(MainActivity.this, ListaEstabelecimentos.class));
         } else if (id == R.id.action_filtrar) {
             criarDialogSelecionarTiposOcorrencia();

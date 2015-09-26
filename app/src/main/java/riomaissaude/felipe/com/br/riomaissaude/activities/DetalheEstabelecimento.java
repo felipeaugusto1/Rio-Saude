@@ -56,6 +56,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         criarReferenciasComponentes();
 
         this.toolbar.setTitle("Detalhe");
+        this.toolbar.setLogo(R.mipmap.ic_launcher);
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 

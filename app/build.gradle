@@ -35,4 +35,11 @@ dependencies {
     compile('com.afollestad.material-dialogs:core:0.8.1.0@aar') {
         transitive = true
     }
+
+    compile 'ch.acra:acra:4.5.0'
+
+    compile 'com.loopj.android:android-async-http:1.4.6'
+    compile('org.apache.httpcomponents:httpcore:4.4.1') {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 }

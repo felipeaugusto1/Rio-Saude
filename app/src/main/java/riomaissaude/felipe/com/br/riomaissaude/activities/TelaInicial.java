@@ -35,7 +35,7 @@ public class TelaInicial extends AppCompatActivity {
 
                 new MaterialDialog.Builder(TelaInicial.this)
                         .title("Aguarde")
-                        .content("Iniciando aplicativo...")
+                        .content("Montando mapa...")
                         .progress(true, 0)
                         .progressIndeterminateStyle(true)
                         .show();

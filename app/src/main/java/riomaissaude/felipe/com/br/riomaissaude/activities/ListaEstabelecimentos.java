@@ -70,6 +70,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         this.toolbar = (Toolbar) findViewById(R.id.toolbar_lista_estabelecimentos);
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         this.toolbar.setTitle("Buscar Estabelecimento");
+        this.toolbar.setLogo(R.mipmap.ic_launcher);
         setSupportActionBar(this.toolbar);
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -120,14 +121,10 @@ public class ListaEstabelecimentos extends AppCompatActivity {
     private void filtrarEstabelecimentos(String q) {
         this.listaEstabelecimentosAux.clear();
 
-        Log.d("pesquisando por", q);
-        Log.d("tamanho da lista", this.listaEstabelecimentos.size()+"");
-
         for (Estabelecimento estabelecimento : this.listaEstabelecimentos) {
             if (estabelecimento.getNomeFantasia().toLowerCase().startsWith(q.toLowerCase()) || estabelecimento.getAtividadeDestino().toLowerCase().startsWith(q.toLowerCase())
                     || estabelecimento.getBairro().toLowerCase().startsWith(q.toLowerCase())) {
                 this.listaEstabelecimentosAux.add(estabelecimento);
-                Log.d("entrou", "entrou");
             }
 
         }
