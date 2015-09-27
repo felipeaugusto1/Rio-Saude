@@ -33,12 +33,12 @@ public class TelaInicial extends AppCompatActivity {
 //                        .progress(true, 0)
 //                        .show();
 
-                new MaterialDialog.Builder(TelaInicial.this)
+                /* new MaterialDialog.Builder(TelaInicial.this)
                         .title("Aguarde")
                         .content("Montando mapa...")
                         .progress(true, 0)
                         .progressIndeterminateStyle(true)
-                        .show();
+                        .show(); */
 
                 startActivity(new Intent(TelaInicial.this, MainActivity.class));
             }
@@ -48,7 +48,7 @@ public class TelaInicial extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_tele_inicial, menu);
+        getMenuInflater().inflate(R.menu.menu_tela_inicial, menu);
         return true;
     }
 

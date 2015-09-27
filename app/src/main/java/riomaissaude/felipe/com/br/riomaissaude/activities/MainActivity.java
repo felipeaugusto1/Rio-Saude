@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ import java.util.List;
 import riomaissaude.felipe.com.br.riomaissaude.R;
 import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 
@@ -44,13 +47,14 @@ public class MainActivity extends AppCompatActivity {
     private List<Estabelecimento> listaEstabelecimentosCopia;
     private SupportMapFragment mapFragment;
     private GoogleMap mapa;
-    private HashMap<Marker, Estabelecimento> marcadoresHashMap;
-    private static ProgressDialog progressDialog;
+    //private HashMap<Marker, Estabelecimento> marcadoresHashMap;
+    //private static ProgressDialog progressDialog;
     private Toolbar toolbar;
     private DatabaseHandler database;
     private ClusterManager<Estabelecimento> clusterManager;
     private Estabelecimento estabelecimentoClicado;
     private List<String> bairros;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +62,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.database = new DatabaseHandler(getApplicationContext());
-
-        this.bairros = this.database.getAllBairros();
-
-        for (String b :this.bairros) {
-            Log.d(b, b);
-        }
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         this.toolbar.setTitle(getResources().getString(R.string.app_name));
@@ -75,18 +73,23 @@ public class MainActivity extends AppCompatActivity {
 
         this.configurarMapa();
 
-        carregarEstabelecimentos();
-        setUpClusterer();
-        //adicionarMarcadores();
+        this.database.deletarEstabelecimentos();
+
+
+        new SincronizarDados().execute("Carregando...");
     }
 
     private void adicionarMarcadores() {
         this.mapa.clear();
 
-        this.marcadoresHashMap = new HashMap<Marker, Estabelecimento>();
+        //this.marcadoresHashMap = new HashMap<Marker, Estabelecimento>();
         if (!ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) && this.listaEstabelecimentos.size() > 0) {
             for (Estabelecimento e : this.listaEstabelecimentos) {
-                LatLng c = new LatLng(Double.parseDouble(e.getLatitude()), Double.parseDouble(e.getLongitude()));
+                try {
+                    LatLng c = new LatLng(Double.parseDouble(e.getLatitude()), Double.parseDouble(e.getLongitude()));
+                } catch (Exception ex) {
+                }
+
 
                 /* MarkerOptions markerOption = null;
 
@@ -113,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         this.mapa.setInfoWindowAdapter(this.clusterManager.getMarkerManager());
 
         clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new MarkerInfoWindowAdapter());
-        progressDialog.dismiss();
 
         clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Estabelecimento>() {
             @Override
@@ -138,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        progressDialog.dismiss();
     }
 
     private void configurarMapa() {
@@ -152,8 +153,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void carregarEstabelecimentos() {
-        progressDialog = ProgressDialog.show(MainActivity.this, "Aguarde...", "Sincronizando estabelecimentos...");
-
         this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
         this.listaEstabelecimentosCopia = this.listaEstabelecimentos;
 
@@ -192,9 +191,10 @@ public class MainActivity extends AppCompatActivity {
                     e.setNaturezaOrganizacao(String.valueOf(rowData[20]));
                     e.setTipoUnidade(String.valueOf(rowData[21]));
                     e.setTipoEstabelecimento(String.valueOf(rowData[22]));
+                    e.setMedia("0");
 
+                    Log.d("Cadastrando id: " + i, "Cadastrando id: " + i);
                     this.listaEstabelecimentos.add(e);
-                    i++;
                 }
 
             } catch (FileNotFoundException e) {
@@ -207,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
             this.database.addEstabelecimentos(this.listaEstabelecimentos);
         }
 
-        progressDialog.dismiss();
     }
 
     private void setUpClusterer() {
@@ -218,8 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
-        this.clusterManager = new ClusterManager<Estabelecimento>(this,  this.mapa);
-
+        this.clusterManager = new ClusterManager<Estabelecimento>(this, this.mapa);
 
 
         // Point the map's listeners at the listeners implemented by the cluster
@@ -347,17 +345,15 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (itensSelecionados.contains("Todos")) {
                                     listaEstabelecimentos = listaEstabelecimentosCopia;
-                                }
-                                else {
+                                } else {
                                     listaEstabelecimentos = new ArrayList<Estabelecimento>();
                                     for (String itemSelecionado : itensSelecionados) {
-                                        for (Estabelecimento e: listaEstabelecimentosCopia) {
+                                        for (Estabelecimento e : listaEstabelecimentosCopia) {
                                             if (StringUtil.retirarAcentosDaPalavra(itemSelecionado.trim()).equalsIgnoreCase(StringUtil.retirarAcentosDaPalavra(e.getBairro())))
                                                 listaEstabelecimentos.add(e);
                                         }
                                     }
                                 }
-
 
 
                                 if (listaEstabelecimentos.size() == 1)
@@ -380,4 +376,37 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private class SincronizarDados extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute(){
+            dialog = new ProgressDialog(MainActivity.this);
+            dialog.setTitle("Aguarde");
+            dialog.setMessage("Sincronizando estabelecimentos...");
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            carregarEstabelecimentos();
+
+            bairros = database.getAllBairros();
+
+            return "finalizado!!!";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String resultado) {
+            setUpClusterer();
+            dialog.dismiss();
+        }
+    }
 }

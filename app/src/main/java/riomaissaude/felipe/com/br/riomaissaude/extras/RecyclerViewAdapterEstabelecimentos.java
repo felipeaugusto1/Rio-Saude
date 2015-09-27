@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,7 +92,6 @@ public class RecyclerViewAdapterEstabelecimentos extends RecyclerView.Adapter<Re
             telefone = (TextView) v.findViewById(R.id.txtCardTelefone);
             logradouro = (TextView) v.findViewById(R.id.txtCardLogradouro);
             tipoEstabelecimento = (TextView) v.findViewById(R.id.txtTipoEstabelecimento);
-
 
             view.setOnClickListener(new View.OnClickListener() {
 

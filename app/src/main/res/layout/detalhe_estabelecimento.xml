@@ -39,6 +39,8 @@
             android:id="@+id/btnComoChegar"
             android:layout_gravity="center_horizontal" />
 
+        <include layout="@layout/card_detalhe_estabelecimento_avaliacao" />
+
         <include layout="@layout/card_detalhe_estabelecimento_titulo" />
 
         <include layout="@layout/card_detalhe_estabelecimento_telefone" />

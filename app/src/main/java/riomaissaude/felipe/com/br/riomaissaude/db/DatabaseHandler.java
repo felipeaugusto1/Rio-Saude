@@ -24,6 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_ESTABELECIMENTO = "estabelecimento";
 
     private static final String KEY_ESTABELECIMENTO_ID = "id";
+    private static final String KEY_ESTABELECIMENTO_MEDIA_VOTACAO = "media";
     private static final String KEY_ESTABELECIMENTO_CNES = "cnes";
     private static final String KEY_ESTABELECIMENTO_CNPJ = "cnpj";
     private static final String KEY_ESTABELECIMENTO_RAZAO_SOCIAL = "razao_social";
@@ -78,7 +79,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ESTABELECIMENTO_CODIGO_NATUREZA_ORGANIZACAO + " TEXT, "
                 + KEY_ESTABELECIMENTO_NATUREZA_ORGANIZACAO + " TEXT, "
                 + KEY_ESTABELECIMENTO_TIPO_UNIDADE + " TEXT, "
-                + KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO + " TEXT )";
+                + KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO + " TEXT, "
+                + KEY_ESTABELECIMENTO_MEDIA_VOTACAO + " TEXT )";
 
         db.execSQL(CREATE_ESTABELECIMENTO_TABLE);
     }
@@ -90,17 +92,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     private void deletarRegistros(SQLiteDatabase db, String tableName) {
-        db.execSQL("delete from " + tableName);
+        //db.execSQL("delete from " + tableName);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESTABELECIMENTO);
+        onCreate(db);
+    }
+
+    public void deletarEstabelecimentos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        deletarRegistros(db, TABLE_ESTABELECIMENTO);
+    }
+
+    public boolean updateEstabelecimento(int id, double media) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(media));
+
+        return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
     }
 
     public void addEstabelecimentos(List<Estabelecimento> estabelecimentos) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        //deletarRegistros(db, TABLE_PRAIA);
-
         ContentValues values;
 
-        for (Estabelecimento estabelecimento: estabelecimentos) {
+        for (Estabelecimento estabelecimento : estabelecimentos) {
             values = new ContentValues();
             values.put(KEY_ESTABELECIMENTO_ID, estabelecimento.getId());
             values.put(KEY_ESTABELECIMENTO_CNES, estabelecimento.getCnes());
@@ -126,7 +142,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(KEY_ESTABELECIMENTO_NATUREZA_ORGANIZACAO, estabelecimento.getNaturezaOrganizacao());
             values.put(KEY_ESTABELECIMENTO_TIPO_UNIDADE, estabelecimento.getTipoUnidade());
             values.put(KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO, estabelecimento.getTipoEstabelecimento());
-
+            values.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(0));
 
             db.insert(TABLE_ESTABELECIMENTO, null, values);
         }
@@ -137,7 +153,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<String> getAllBairros() {
         List<String> bairros = new ArrayList<String>();
 
-        String selectQuery = "SELECT DISTINCT(" + KEY_ESTABELECIMENTO_BAIRRO + ") FROM " +TABLE_ESTABELECIMENTO + " order by " +KEY_ESTABELECIMENTO_BAIRRO;
+        String selectQuery = "SELECT DISTINCT(" + KEY_ESTABELECIMENTO_BAIRRO + ") FROM " + TABLE_ESTABELECIMENTO + " order by " + KEY_ESTABELECIMENTO_BAIRRO;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -197,7 +213,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Estabelecimento getByPrimaryKey(int id) {
         String selectQuery = "SELECT  * FROM " + TABLE_ESTABELECIMENTO + " WHERE "
-                + KEY_ESTABELECIMENTO_ID + " = " +id;
+                + KEY_ESTABELECIMENTO_ID + " = " + id;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -230,9 +246,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 estabelecimento.setNaturezaOrganizacao(cursor.getString(21));
                 estabelecimento.setTipoUnidade(cursor.getString(22));
                 estabelecimento.setTipoEstabelecimento(cursor.getString(23));
+                estabelecimento.setMedia(cursor.getString(24));
             } while (cursor.moveToNext());
         }
 
         return estabelecimento;
     }
+
 }

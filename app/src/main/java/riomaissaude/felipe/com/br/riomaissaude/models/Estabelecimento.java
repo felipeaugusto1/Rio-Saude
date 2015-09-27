@@ -9,6 +9,7 @@ import com.google.maps.android.clustering.ClusterItem;
 public class Estabelecimento implements ClusterItem {
 
     private int id;
+    private String media;
     private String cnes;
     private String cnpj;
     private String razaoSocial;
@@ -228,9 +229,18 @@ public class Estabelecimento implements ClusterItem {
         this.id = id;
     }
 
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
+    }
+
     @Override
     public String toString() {
         return "Estabelecimento{" +
+                "media='" + media + '\'' +
                 "cnes='" + cnes + '\'' +
                 ", cnpj='" + cnpj + '\'' +
                 ", razaoSocial='" + razaoSocial + '\'' +

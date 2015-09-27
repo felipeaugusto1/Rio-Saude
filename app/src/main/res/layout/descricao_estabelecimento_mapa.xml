@@ -33,4 +33,12 @@
         android:textColor="@android:color/black"
         android:text="" />
 
+    <!-- <RatingBar
+        android:id="@+id/ratingBarDescricaoMapa"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"
+        android:layout_below="@id/txtTelefone" /> -->
+
 </RelativeLayout>
