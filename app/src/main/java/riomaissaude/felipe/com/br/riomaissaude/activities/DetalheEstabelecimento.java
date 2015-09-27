@@ -3,6 +3,8 @@ package riomaissaude.felipe.com.br.riomaissaude.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -103,8 +105,6 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         if (!ValidatorUtil.isNuloOuVazio(b)) {
             String estabelecimento_id = b.getString("estabelecimento_id");
             this.estabelecimento = this.database.getByPrimaryKey(Integer.parseInt(estabelecimento_id));
-
-            Log.d("esta", this.estabelecimento.getId() + " - " +this.estabelecimento.getMedia());
         }
 
         percorrerOcorrencias();
@@ -207,7 +207,10 @@ public class DetalheEstabelecimento extends AppCompatActivity {
                         parametros.put("id", estabelecimento.getId());
                         parametros.put("nota", String.valueOf(Math.round(valor)));
 
-                        votarWs();
+                        if (isConectado())
+                            votarWs();
+                        else
+                            Toast.makeText(DetalheEstabelecimento.this, "Você precisa estar conectado a internet para avaliar um estabelecimento.", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -293,6 +296,18 @@ public class DetalheEstabelecimento extends AppCompatActivity {
             }
 
         });
+    }
+
+    private boolean isConectado() {
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connec != null && (
+                (connec.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) ||
+                        (connec.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED))) {
+            return true;
+        }
+
+        return false;
     }
 
 }

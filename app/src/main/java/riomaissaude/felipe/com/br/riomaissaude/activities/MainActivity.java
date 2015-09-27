@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.configurarMapa();
 
-        this.database.deletarEstabelecimentos();
+        //this.database.deletarEstabelecimentos();
 
         new CarregarDadosMapa().execute("Carregando...");
 
@@ -503,4 +503,5 @@ public class MainActivity extends AppCompatActivity {
 
         return false;
     }
+
 }
