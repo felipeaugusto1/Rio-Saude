@@ -16,9 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,17 +36,16 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import org.apache.http.Header;
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.R;
 import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
-import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 
@@ -172,6 +169,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_estrela, menu);
+        getMenuInflater().inflate(R.menu.menu_status_estabelecimento, menu);
         return true;
     }
 
@@ -180,6 +178,9 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_avaliar:
                 inflarAvaliacaoEstabelecimento();
+                break;
+            case R.id.action_status_estabelecimento:
+                inflarStatusEstabelecimento();
                 break;
         }
 
@@ -223,6 +224,53 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         customDialog.setView(view);
         customDialog.show();
+    }
+
+    private List<String> getStatusEstabelecimentos() {
+        List<String> status = new ArrayList<>();
+
+        status.add(StatusEstabelecimento.SUPER_LOTADO);
+        status.add(StatusEstabelecimento.SEM_MEDICO);
+        status.add(StatusEstabelecimento.SEM_ATENDIMENTO);
+        status.add(StatusEstabelecimento.ATENDIMENTO_LENTO);
+        status.add(StatusEstabelecimento.FUNCIONANDO_BEM);
+
+        return status;
+    }
+
+    private void inflarStatusEstabelecimento() {
+        AlertDialog dialog;
+
+        final CharSequence[] items = getStatusEstabelecimentos().toArray(new CharSequence[this.getStatusEstabelecimentos().size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Situação Atual");
+        builder.setSingleChoiceItems(items, 0, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+
+                        String situacaoAtual = getStatusEstabelecimentos().get(selectedPosition);
+
+                        parametros = new RequestParams();
+                        parametros.put("id", estabelecimento.getId());
+                        parametros.put("status", situacaoAtual);
+
+                        if (isConectado())
+                            alterarStatusWs();
+                        else
+                            Toast.makeText(DetalheEstabelecimento.this, "Você precisa estar conectado a internet para avaliar um estabelecimento.", Toast.LENGTH_LONG).show();
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -281,12 +329,50 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
                 estabelecimentoAtualizado = gson.fromJson(str, EstabelecimentoWs.class);
 
-                boolean b = database.updateEstabelecimento(estabelecimentoAtualizado.getId(), estabelecimentoAtualizado.getMedia());
+                boolean b = database.updateAvaliacaoEstabelecimento(estabelecimentoAtualizado.getId(), estabelecimentoAtualizado.getMedia());
 
                 if (b) {
                     Estabelecimento e = database.getByPrimaryKey(estabelecimento.getId());
 
                     ratingBarAvaliacao.setRating(Float.parseFloat(e.getMedia()));
+
+                    Toast.makeText(DetalheEstabelecimento.this, "atualizado...", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+
+            }
+
+        });
+    }
+
+    private void alterarStatusWs() {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(WebService.ENDERECO_WS.concat("estabelecimento/status"), this.parametros, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                String str = "";
+                try {
+                    str = new String(bytes, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new GsonBuilder().setDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss").create();
+
+                estabelecimentoAtualizado = gson.fromJson(str, EstabelecimentoWs.class);
+
+                boolean b = database.updateStatusEstabelecimento(estabelecimentoAtualizado.getId(), estabelecimentoAtualizado.getStatusEstabelecimento());
+
+                if (b) {
+                    Estabelecimento e = database.getByPrimaryKey(estabelecimento.getId());
+
+                    Toast.makeText(DetalheEstabelecimento.this, "atualizado...", Toast.LENGTH_LONG).show();
                 }
             }
 

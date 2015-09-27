@@ -9,6 +9,7 @@ public class EstabelecimentoWs {
     private int qtdVotos;
     private int somaVotos;
     private double media;
+    private String statusEstabelecimento;
 
     public EstabelecimentoWs(Integer id, int qtdVotos, int somaVotos, double media) {
         this.id = id;
@@ -50,6 +51,14 @@ public class EstabelecimentoWs {
 
     public void setMedia(double media) {
         this.media = media;
+    }
+
+    public String getStatusEstabelecimento() {
+        return statusEstabelecimento;
+    }
+
+    public void setStatusEstabelecimento(String statusEstabelecimento) {
+        this.statusEstabelecimento = statusEstabelecimento;
     }
 
     @Override

@@ -41,13 +41,13 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.R;
 import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
+import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     e.setTipoUnidade(String.valueOf(rowData[21]));
                     e.setTipoEstabelecimento(String.valueOf(rowData[22]));
                     e.setMedia("0");
+                    e.setStatusEstabelecimento(StatusEstabelecimento.SEM_INFORMACAO);
 
                     this.listaEstabelecimentos.add(e);
                 }
@@ -307,10 +308,12 @@ public class MainActivity extends AppCompatActivity {
                     TextView txtNome = (TextView) v.findViewById(R.id.txtNomeFantasia);
                     TextView txtLogradouro = (TextView) v.findViewById(R.id.txtLogradouro);
                     TextView txtTelefone = (TextView) v.findViewById(R.id.txtTelefone);
+                    TextView txtStatusAtual = (TextView) v.findViewById(R.id.txtStatusAtual);
 
                     txtNome.setText(estabelecimentoClicado.getNomeFantasia());
                     txtLogradouro.setText(estabelecimentoClicado.getLogradouro());
                     txtTelefone.setText(estabelecimentoClicado.getTelefone());
+                    txtStatusAtual.setText("Situação atual: " +estabelecimentoClicado.getStatusEstabelecimento());
                 }
             } catch (Exception e) {
             }
@@ -321,8 +324,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void criarDialogSelecionarTiposOcorrencia() {
         AlertDialog dialog;
-        // following code will be in your activity.java file
-        //final CharSequence[] items = getResources().getStringArray(R.array.categoriasOcorrenciaFiltro);
 
         final CharSequence[] items = this.bairros.toArray(new CharSequence[this.bairros.size()]);
 
@@ -441,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             for (EstabelecimentoWs e: listaEstabelecimentoWs) {
                 Log.d("Indo atualizar", e.getId() + " - " + e.getMedia());
-                database.updateEstabelecimento(e.getId(), e.getMedia());
+                database.updateAvaliacaoEstabelecimento(e.getId(), e.getMedia());
             }
 
             //database.updateEstabelecimentos(listaEstabelecimentoWs);

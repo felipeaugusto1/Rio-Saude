@@ -33,6 +33,7 @@ public class Estabelecimento implements ClusterItem {
     private String naturezaOrganizacao;
     private String tipoUnidade;
     private String tipoEstabelecimento;
+    private String statusEstabelecimento;
 
     public Estabelecimento() {
     }
@@ -235,6 +236,14 @@ public class Estabelecimento implements ClusterItem {
 
     public void setMedia(String media) {
         this.media = media;
+    }
+
+    public String getStatusEstabelecimento() {
+        return statusEstabelecimento;
+    }
+
+    public void setStatusEstabelecimento(String statusEstabelecimento) {
+        this.statusEstabelecimento = statusEstabelecimento;
     }
 
     @Override

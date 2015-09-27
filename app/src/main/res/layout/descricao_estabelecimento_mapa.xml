@@ -33,6 +33,15 @@
         android:textColor="@android:color/black"
         android:text="" />
 
+    <TextView
+        android:id="@+id/txtStatusAtual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txtTelefone"
+        android:textColor="@android:color/black"
+        android:text="" />
+
     <!-- <RatingBar
         android:id="@+id/ratingBarDescricaoMapa"
         style="?android:attr/ratingBarStyleIndicator"

@@ -49,6 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ESTABELECIMENTO_NATUREZA_ORGANIZACAO = "natureza_organizacao";
     private static final String KEY_ESTABELECIMENTO_TIPO_UNIDADE = "tipo_unidade";
     private static final String KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO = "tipo_estabelecimento";
+    private static final String KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO = "status_estabelecimento";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -81,7 +82,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ESTABELECIMENTO_NATUREZA_ORGANIZACAO + " TEXT, "
                 + KEY_ESTABELECIMENTO_TIPO_UNIDADE + " TEXT, "
                 + KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO + " TEXT, "
-                + KEY_ESTABELECIMENTO_MEDIA_VOTACAO + " TEXT )";
+                + KEY_ESTABELECIMENTO_MEDIA_VOTACAO + " TEXT, "
+                + KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO + " TEXT )";
 
         db.execSQL(CREATE_ESTABELECIMENTO_TABLE);
     }
@@ -103,7 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         deletarRegistros(db, TABLE_ESTABELECIMENTO);
     }
 
-    public boolean updateEstabelecimento(int id, double media) {
+    public boolean updateAvaliacaoEstabelecimento(int id, double media) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues args = new ContentValues();
@@ -112,17 +114,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
     }
 
-    public void updateEstabelecimentos(List<EstabelecimentoWs> lista) {
+    public boolean updateStatusEstabelecimento(int id, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues args = new ContentValues();
+        args.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, status);
 
-        for (EstabelecimentoWs e: lista) {
-            args.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(e.getMedia()));
-            int a = db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + e.getId(), null);
-            Log.d("Atualizando estab: " +e.getId(), "1 ou 0? " +a);
-        }
-
+        return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
     }
 
     public void addEstabelecimentos(List<Estabelecimento> estabelecimentos) {
@@ -157,6 +155,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(KEY_ESTABELECIMENTO_TIPO_UNIDADE, estabelecimento.getTipoUnidade());
             values.put(KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO, estabelecimento.getTipoEstabelecimento());
             values.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(0));
+            values.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, estabelecimento.getStatusEstabelecimento());
 
             db.insert(TABLE_ESTABELECIMENTO, null, values);
         }
@@ -217,6 +216,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 estabelecimento.setNaturezaOrganizacao(cursor.getString(21));
                 estabelecimento.setTipoUnidade(cursor.getString(22));
                 estabelecimento.setTipoEstabelecimento(cursor.getString(23));
+                estabelecimento.setMedia(cursor.getString(24));
+                estabelecimento.setStatusEstabelecimento(cursor.getString(25));
 
                 listaEstabelecimentos.add(estabelecimento);
             } while (cursor.moveToNext());
@@ -261,6 +262,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 estabelecimento.setTipoUnidade(cursor.getString(22));
                 estabelecimento.setTipoEstabelecimento(cursor.getString(23));
                 estabelecimento.setMedia(cursor.getString(24));
+                estabelecimento.setStatusEstabelecimento(cursor.getString(25));
             } while (cursor.moveToNext());
         }
 
