@@ -103,6 +103,8 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         if (!ValidatorUtil.isNuloOuVazio(b)) {
             String estabelecimento_id = b.getString("estabelecimento_id");
             this.estabelecimento = this.database.getByPrimaryKey(Integer.parseInt(estabelecimento_id));
+
+            Log.d("esta", this.estabelecimento.getId() + " - " +this.estabelecimento.getMedia());
         }
 
         percorrerOcorrencias();

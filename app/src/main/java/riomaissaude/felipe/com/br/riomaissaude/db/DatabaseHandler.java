@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 
 /**
@@ -109,6 +110,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(media));
 
         return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
+    }
+
+    public void updateEstabelecimentos(List<EstabelecimentoWs> lista) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues args = new ContentValues();
+
+        for (EstabelecimentoWs e: lista) {
+            args.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(e.getMedia()));
+            int a = db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + e.getId(), null);
+            Log.d("Atualizando estab: " +e.getId(), "1 ou 0? " +a);
+        }
+
     }
 
     public void addEstabelecimentos(List<Estabelecimento> estabelecimentos) {

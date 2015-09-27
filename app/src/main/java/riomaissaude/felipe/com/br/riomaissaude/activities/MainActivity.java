@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -14,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,12 +25,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.clustering.ClusterManager;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +50,7 @@ import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
+import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private ClusterManager<Estabelecimento> clusterManager;
     private Estabelecimento estabelecimentoClicado;
     private List<String> bairros;
+    private List<EstabelecimentoWs> listaEstabelecimentoWs;
 
 
     @Override
@@ -75,8 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
         this.database.deletarEstabelecimentos();
 
+        new CarregarDadosMapa().execute("Carregando...");
 
-        new SincronizarDados().execute("Carregando...");
+        if (isConectado())
+            buscarEstabelecimentosWs();
+
     }
 
     private void adicionarMarcadores() {
@@ -193,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
                     e.setTipoEstabelecimento(String.valueOf(rowData[22]));
                     e.setMedia("0");
 
-                    Log.d("Cadastrando id: " + i, "Cadastrando id: " + i);
                     this.listaEstabelecimentos.add(e);
                 }
 
@@ -376,15 +390,15 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private class SincronizarDados extends AsyncTask<String, Integer, String> {
+    private class CarregarDadosMapa extends AsyncTask<String, Integer, String> {
 
         ProgressDialog dialog;
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             dialog = new ProgressDialog(MainActivity.this);
             dialog.setTitle("Aguarde");
-            dialog.setMessage("Sincronizando estabelecimentos...");
+            dialog.setMessage("Carregando marcadores no mapa...");
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         }
@@ -408,5 +422,85 @@ public class MainActivity extends AppCompatActivity {
             setUpClusterer();
             dialog.dismiss();
         }
+    }
+
+    private class SincronizarEstabelecimentos extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(MainActivity.this);
+            dialog.setTitle("Aguarde");
+            dialog.setMessage("Sincronizando estabelecimentos...");
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            for (EstabelecimentoWs e: listaEstabelecimentoWs) {
+                Log.d("Indo atualizar", e.getId() + " - " + e.getMedia());
+                database.updateEstabelecimento(e.getId(), e.getMedia());
+            }
+
+            //database.updateEstabelecimentos(listaEstabelecimentoWs);
+            return "finalizado!!!";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String resultado) {
+            dialog.dismiss();
+            new CarregarDadosMapa().execute("Carregando...");
+        }
+    }
+
+    private void buscarEstabelecimentosWs() {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(WebService.ENDERECO_WS.concat("estabelecimento/listar"), new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                String str = "";
+                try {
+                    str = new String(bytes, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new GsonBuilder().setDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss").create();
+
+                Type listType = new TypeToken<ArrayList<EstabelecimentoWs>>() {
+                }.getType();
+                listaEstabelecimentoWs = gson.fromJson(str, listType);
+
+                new SincronizarEstabelecimentos().execute("Sincronizar...");
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+
+            }
+
+        });
+    }
+
+    private boolean isConectado() {
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connec != null && (
+                (connec.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) ||
+                        (connec.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED))) {
+            return true;
+        }
+
+        return false;
     }
 }
