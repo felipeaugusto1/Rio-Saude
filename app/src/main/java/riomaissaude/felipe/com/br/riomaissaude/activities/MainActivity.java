@@ -51,6 +51,7 @@ import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -93,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
         if (isConectado())
             buscarEstabelecimentosWs();
 
+        new MaterialShowcaseView.Builder(this)
+                .setTarget(this.toolbar)
+                .setDismissText("Ok, entendi")
+                .setDelay(200) // optional but starting animations immediately in onCreate can make them choppy
+                .setContentText("Cheque nossas outras funcionalidades: \n \n - Visualizar estabelecimentos ao redor \n - Pesquisar estabelecimentos \n - Filtrar por bairros").show();
     }
 
     private void adicionarMarcadores() {

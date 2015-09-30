@@ -90,6 +90,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d("Deletando banco", "Deletando banco");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESTABELECIMENTO);
         onCreate(db);
     }

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -48,6 +49,8 @@ import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 
 /**
@@ -66,6 +69,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
     private RatingBar ratingBarAvaliacao;
     private ImageButton btnLigar;
     private RequestParams parametros;
+    private Button btnComoChegar;
     private EstabelecimentoWs estabelecimentoAtualizado;
 
     @Override
@@ -105,6 +109,23 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         }
 
         percorrerOcorrencias();
+
+        dicas();
+    }
+
+    private void dicas() {
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "");
+
+        sequence.addSequenceItem(this.toolbar, "Dê a sua avaliação ou diga a situação atual do estabelecimento.", "Ok, entendi");
+
+        sequence.addSequenceItem(this.btnComoChegar, "Crie sua rota para este estabelecimento.", "Ok, entendi");
+
+        sequence.addSequenceItem(this.btnLigar, "Ligue para o estabelecimento caso necessário.", "Ok, entendi");
+
+        sequence.start();
     }
 
     private void criarReferenciasComponentes() {
@@ -112,6 +133,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
+        this.btnComoChegar = (Button) findViewById(R.id.btnComoChegar);
         this.txtNomeEstabelecimento = (TextView) findViewById(R.id.txtNomeEstabelecimento);
         this.txtEnderecoEstabelecimento = (TextView) findViewById(R.id.txtEnderecoEstabelecimento);
         this.txtTipoEstabelecimento = (TextView) findViewById(R.id.txtTipoEstabelecimento);
