@@ -50,13 +50,17 @@ public class RecyclerViewAdapterEstabelecimentos extends RecyclerView.Adapter<Re
     @Override
     public void onBindViewHolder(EstabelecimentoViewHolder ocorrenciaViewHolder, int i) {
         if (!isPositionHeader(i)) {
-            Estabelecimento estabelecimento = listaEstabelecimentos.get(i); //-1 eh o cabecalho que foi adicionado
+            try {
+                Estabelecimento estabelecimento = listaEstabelecimentos.get(i); //-1 eh o cabecalho que foi adicionado
 
-            ocorrenciaViewHolder.id = estabelecimento.getId();
-            ocorrenciaViewHolder.nome.setText(estabelecimento.getNomeFantasia());
-            ocorrenciaViewHolder.telefone.setText(estabelecimento.getTelefone());
-            ocorrenciaViewHolder.logradouro.setText(estabelecimento.getLogradouro());
-            ocorrenciaViewHolder.tipoEstabelecimento.setText(estabelecimento.getTipoEstabelecimento());
+                ocorrenciaViewHolder.id = estabelecimento.getId();
+                ocorrenciaViewHolder.nome.setText(estabelecimento.getNomeFantasia());
+                ocorrenciaViewHolder.telefone.setText(estabelecimento.getTelefone());
+                ocorrenciaViewHolder.logradouro.setText(estabelecimento.getLogradouro());
+                ocorrenciaViewHolder.tipoEstabelecimento.setText(estabelecimento.getTipoEstabelecimento());
+            } catch (Exception e) {
+
+            }
         }
 
     }
@@ -98,22 +102,25 @@ public class RecyclerViewAdapterEstabelecimentos extends RecyclerView.Adapter<Re
                 @Override
                 public void onClick(View v) {
 
+                    try {
+                        Log.d("id clicado", String.valueOf(id));
 
-                    Log.d("id clicado", String.valueOf(id));
+                        if (id != 0) {
+                            context = v.getContext();
 
+                            Intent telaDetalheOcorrencia = new Intent(context,
+                                    DetalheEstabelecimento.class);
 
-                    if (id != 0) {
-                        context = v.getContext();
+                            telaDetalheOcorrencia.putExtra("estabelecimento_id", String.valueOf(id));
+                            //telaDetalheOcorrencia.putExtra("classe", String.valueOf(RecyclerViewAdapterOcorrencias.class));
+                            //telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        Intent telaDetalheOcorrencia = new Intent(context,
-                                DetalheEstabelecimento.class);
+                            context.startActivity(telaDetalheOcorrencia);
+                        }
+                    } catch (Exception ex) {
 
-                        telaDetalheOcorrencia.putExtra("estabelecimento_id", String.valueOf(id));
-                        //telaDetalheOcorrencia.putExtra("classe", String.valueOf(RecyclerViewAdapterOcorrencias.class));
-                        //telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                        context.startActivity(telaDetalheOcorrencia);
                     }
+
                 }
             });
 

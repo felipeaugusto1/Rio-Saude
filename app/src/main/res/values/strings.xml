@@ -6,4 +6,18 @@
     <string name="search_title">Procurar</string>
     <string name="action_lista">Lista</string>
     <string name="title_activity_tele_inicial">Tela Inicial</string>
+
+    <string name="tela_ao_redor">Ao meu redor</string>
+    <string name="tela_detalhe">Detalhe</string>
+
+    <string name="gpsDesativado">GPS está desativado.</string>
+    <string name="ativar">Ativar</string>
+
+    <string name="aguarde">Aguarde...</string>
+
+    <!-- Tela Ao Redor -->
+    <string name="recuperandoPosicao">Estamos recuperando sua posição...</string>
+    <string name="msgAtivarGps">Por favor ative o GPS para usar esta funcionalidade.</string>
+
+
 </resources>

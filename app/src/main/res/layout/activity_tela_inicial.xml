@@ -6,14 +6,35 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorPrimary"
+    android:id="@+id/layoutTelaInicial"
+    android:onClick="iniciarApp"
+    android:clickable="true"
+    android:gravity="center"
     tools:context="riomaissaude.felipe.com.br.riomaissaude.activities.TelaInicial">
 
     <TextView
-        android:id="@+id/txtFrase"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:id="@+id/txtFraseApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:clickable="true"
-        android:text="Ola. Clique aqui para continuar" />
+        android:textColor="@android:color/white"
+        android:text="O aplicativo Rio Saúde utiliza dados do DATA RIO. " />
+
+    <TextView
+        android:id="@+id/txtFrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/txtFraseApp"
+        android:paddingTop="100dp"
+        android:textSize="16dp"
+        android:text="Clique aqui para continuar" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cristo" />
 
 </RelativeLayout>

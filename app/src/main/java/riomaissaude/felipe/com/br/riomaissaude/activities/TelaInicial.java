@@ -22,33 +22,27 @@ public class TelaInicial extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial);
 
-        this.txtFrase = (TextView) findViewById(R.id.txtFrase);
+        /* this.txtFrase = (TextView) findViewById(R.id.txtFrase);
         this.txtFrase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-//                new MaterialDialog.Builder(TelaInicial.this)
-//                        .title("Aguarde")
-//                        .content("Iniciando aplicativo...")
-//                        .progress(true, 0)
-//                        .show();
-
-                /* new MaterialDialog.Builder(TelaInicial.this)
-                        .title("Aguarde")
-                        .content("Montando mapa...")
-                        .progress(true, 0)
-                        .progressIndeterminateStyle(true)
-                        .show(); */
 
                 startActivity(new Intent(TelaInicial.this, MainActivity.class));
             }
-        });
+        }); */
+    }
+
+    public void iniciarApp(View view) {
+        if (view.getId() == R.id.layoutTelaInicial)
+            startActivity(new Intent(TelaInicial.this, MainActivity.class));
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_tela_inicial, menu);
+        //getMenuInflater().inflate(R.menu.menu_tela_inicial, menu);
         return true;
     }
 
@@ -60,9 +54,9 @@ public class TelaInicial extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        //if (id == R.id.action_settings) {
+//            return true;
+  //      }
 
         return super.onOptionsItemSelected(item);
     }

@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,6 +40,8 @@ import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.extras.RecyclerViewAdapterEstabelecimentos;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.provider.SearchableProvider;
+import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 
 /**
@@ -69,8 +73,8 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         this.layoutListaEstabelecimentos = (CoordinatorLayout) findViewById(R.id.layoutListaEstabelecimentos);
         this.toolbar = (Toolbar) findViewById(R.id.toolbar_lista_estabelecimentos);
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        this.toolbar.setTitle("Buscar Estabelecimento");
-        this.toolbar.setLogo(R.mipmap.ic_launcher);
+        this.toolbar.setTitle("Pesquisar");
+        this.toolbar.setLogo(R.mipmap.ic_launcher2);
         setSupportActionBar(this.toolbar);
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -97,6 +101,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         handleSearch(getIntent());
+
     }
 
     private void handleSearch(Intent intent) {
@@ -122,31 +127,18 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         this.listaEstabelecimentosAux.clear();
 
         for (Estabelecimento estabelecimento : this.listaEstabelecimentos) {
-            if (estabelecimento.getNomeFantasia().toLowerCase().startsWith(q.toLowerCase()) || estabelecimento.getAtividadeDestino().toLowerCase().startsWith(q.toLowerCase())
-                    || estabelecimento.getBairro().toLowerCase().startsWith(q.toLowerCase())) {
+            if (StringUtil.retirarAcentosDaPalavra(estabelecimento.getNomeFantasia()).toLowerCase().contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase())) || StringUtil.retirarAcentosDaPalavra(estabelecimento.getBairro()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))) {
                 this.listaEstabelecimentosAux.add(estabelecimento);
             }
-
         }
 
         if (this.listaEstabelecimentosAux.isEmpty()) {
-            //this.recyclerView.setVisibility(View.GONE);
-
-            //TextView tv = new TextView(this);
-            //tv.setText("Nenhum registro encontrado");
-            //tv.setId(1);
-
-            //tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            //tv.setGravity(Gravity.CENTER);
-            //this.layoutListaEstabelecimentos.addView(tv);
-            Toast.makeText(ListaEstabelecimentos.this, "Nenhum registro encontrado.", Toast.LENGTH_LONG).show();
+            ToastUtil.criarToastLongoCentralizado(ListaEstabelecimentos.this, "Nenhum registro encontrado.");
         } else {
-            if (this.listaEstabelecimentos.size() == 1)
-                Toast.makeText(ListaEstabelecimentos.this, this.listaEstabelecimentosAux.size() + " registro encontrado.", Toast.LENGTH_LONG).show();
+            if (this.listaEstabelecimentosAux.size() == 1)
+                ToastUtil.criarToastLongoCentralizado(ListaEstabelecimentos.this, this.listaEstabelecimentosAux.size() + " registro encontrado.");
             else
-                Toast.makeText(ListaEstabelecimentos.this, this.listaEstabelecimentosAux.size() + " registros encontrados.", Toast.LENGTH_LONG).show();
-            //this.recyclerView.setVisibility(View.VISIBLE);
-            //this.layoutListaEstabelecimentos.removeView(this.layoutListaEstabelecimentos.findViewById(1));
+                ToastUtil.criarToastLongoCentralizado(ListaEstabelecimentos.this, this.listaEstabelecimentosAux.size() + " registros encontrados.");
         }
 
         this.adapter.notifyDataSetChanged();
@@ -169,54 +161,6 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
         this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
         this.listaEstabelecimentosAux = this.database.getAllEstabelecimentos();
-
-        if (this.listaEstabelecimentos.size() == 0) {
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("estabelecimentos.csv")));
-                String line;
-                int i = 1;
-
-                Estabelecimento e;
-                while ((line = reader.readLine()) != null) {
-                    e = new Estabelecimento();
-                    String[] rowData = line.split(",");
-
-                    e.setId(i++);
-                    e.setCnes(String.valueOf(rowData[0]));
-                    e.setCnpj(String.valueOf(rowData[1]));
-                    e.setRazaoSocial(String.valueOf(rowData[2]));
-                    e.setNomeFantasia(String.valueOf(rowData[3]));
-                    e.setLogradouro(String.valueOf(rowData[4]));
-                    e.setNumero(String.valueOf(rowData[5]));
-                    e.setComplemento(String.valueOf(rowData[6]));
-                    e.setBairro(String.valueOf(rowData[7]));
-                    e.setCep(String.valueOf(rowData[8]));
-                    e.setTelefone(String.valueOf(rowData[9]));
-                    e.setFax(String.valueOf(rowData[10]));
-                    e.setEmail(String.valueOf(rowData[11]));
-                    e.setLatitude(String.valueOf(rowData[12]).replace("\"", ""));
-                    e.setLongitude(String.valueOf(rowData[13]).replace("\"", ""));
-                    e.setDataAtualizacaoCoordenadas(String.valueOf(rowData[14]));
-                    e.setCodigoEsferaAdministrativa(String.valueOf(rowData[15]));
-                    e.setEsferaAdministrativa(String.valueOf(rowData[16]));
-                    e.setCodigoDaAtividade(String.valueOf(rowData[17]));
-                    e.setAtividadeDestino(String.valueOf(rowData[18]));
-                    e.setCodigoNaturezaOrganizacao(String.valueOf(rowData[19]));
-                    e.setNaturezaOrganizacao(String.valueOf(rowData[20]));
-                    e.setTipoUnidade(String.valueOf(rowData[21]));
-                    e.setTipoEstabelecimento(String.valueOf(rowData[22]));
-
-                    this.listaEstabelecimentos.add(e);
-                    i++;
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
     @Override
@@ -255,4 +199,5 @@ public class ListaEstabelecimentos extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }

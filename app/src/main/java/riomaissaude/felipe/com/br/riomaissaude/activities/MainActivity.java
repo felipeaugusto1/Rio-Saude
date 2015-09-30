@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> bairros;
     private List<EstabelecimentoWs> listaEstabelecimentoWs;
 
+    private MaterialDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         this.toolbar.setTitle(getResources().getString(R.string.app_name));
-        this.toolbar.setLogo(R.mipmap.ic_launcher);
+        this.toolbar.setLogo(R.mipmap.ic_launcher2);
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
@@ -225,43 +226,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpClusterer() {
-        // Declare a variable for the cluster manager.
-
-        // Position the map.
+        // lat e long do RJ
         this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-22.9112335, -43.448334), 10));
 
-        // Initialize the manager with the context and the map.
-        // (Activity extends context, so we can pass 'this' in the constructor.)
         this.clusterManager = new ClusterManager<Estabelecimento>(this, this.mapa);
 
-
-        // Point the map's listeners at the listeners implemented by the cluster
-        // manager.
         this.mapa.setOnCameraChangeListener(clusterManager);
         this.mapa.setOnMarkerClickListener(clusterManager);
 
-        // Add cluster items (markers) to the cluster manager.
         adicionarMarcadores();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_ao_redor, menu);
+        getMenuInflater().inflate(R.menu.menu_lista_estabelecimentos, menu);
         getMenuInflater().inflate(R.menu.menu_filtrar, menu);
-
-        /* SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView;
-        MenuItem item = menu.findItem(R.id.menu_search);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            searchView = (SearchView) item.getActionView();
-        } else {
-            searchView = (SearchView) MenuItemCompat.getActionView(item);
-        }
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setQueryHint("dica aqui..."); */
 
         return true;
     }
@@ -270,17 +251,21 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            new MaterialDialog.Builder(MainActivity.this)
-                    .title("Aguarde")
-                    .content("Recuperando estabelecimentos...")
+        if (id == R.id.action_lista_estabelecimentos) {
+
+            /* dialog = new MaterialDialog.Builder(MainActivity.this)
+                    .title(getResources().getString(R.string.aguarde))
+                    .content("Listando estabelecimentos...")
                     .progress(true, 0)
-                    .progressIndeterminateStyle(true)
-                    .show();
+                    .progressIndeterminateStyle(true).show(); */
+
             startActivity(new Intent(MainActivity.this, ListaEstabelecimentos.class));
         } else if (id == R.id.action_filtrar) {
             criarDialogSelecionarTiposOcorrencia();
+        } else if (id == R.id.action_ao_redor) {
+            startActivity(new Intent(MainActivity.this, AoRedor.class));
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -398,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             dialog = new ProgressDialog(MainActivity.this);
-            dialog.setTitle("Aguarde");
+            dialog.setTitle(getResources().getString(R.string.aguarde));
             dialog.setMessage("Carregando marcadores no mapa...");
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
