@@ -48,10 +48,13 @@ import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,11 +97,20 @@ public class MainActivity extends AppCompatActivity {
         if (isConectado())
             buscarEstabelecimentosWs();
 
+        if (PreferenciasUtil.getPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DICAS_MAPA, MainActivity.this).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO))
+            dicas();
+
+    }
+
+    private void dicas() {
+        PreferenciasUtil.salvarPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DICAS_MAPA, String.valueOf(Boolean.TRUE), MainActivity.this);
+
         new MaterialShowcaseView.Builder(this)
                 .setTarget(this.toolbar)
                 .setDismissText("Ok, entendi")
-                .setDelay(200) // optional but starting animations immediately in onCreate can make them choppy
+                .setDelay(200)
                 .setContentText("Cheque nossas outras funcionalidades: \n \n - Visualizar estabelecimentos ao redor \n - Pesquisar estabelecimentos \n - Filtrar por bairros").show();
+
     }
 
     private void adicionarMarcadores() {

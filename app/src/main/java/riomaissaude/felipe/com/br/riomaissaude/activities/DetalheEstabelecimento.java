@@ -47,6 +47,7 @@ import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -110,16 +111,19 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         percorrerOcorrencias();
 
-        dicas();
+        if (PreferenciasUtil.getPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DICAS_DETALHE, DetalheEstabelecimento.this).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO))
+            dicas();
     }
 
     private void dicas() {
+        PreferenciasUtil.salvarPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DICAS_DETALHE, String.valueOf(Boolean.TRUE), DetalheEstabelecimento.this);
+
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500); // half second between each showcase view
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "");
 
-        sequence.addSequenceItem(this.toolbar, "Dê a sua avaliação ou diga a situação atual do estabelecimento.", "Ok, entendi");
+        sequence.addSequenceItem(this.toolbar, "Ajude as outras pessoas. Dê a sua avaliação ou diga a situação atual do estabelecimento, que será valida pelo dia atual.", "Ok, entendi");
 
         sequence.addSequenceItem(this.btnComoChegar, "Crie sua rota para este estabelecimento.", "Ok, entendi");
 
