@@ -14,7 +14,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.RatingBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
+import com.loopj.android.http.RequestParams;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
@@ -58,7 +65,7 @@ public class AoRedor extends AppCompatActivity {
     private HashMap<Marker, Estabelecimento> marcadoresHashMap;
     private static final long ONE_MIN = 1000 * 60;
 
-    private static final int DISTANCIA_RAIO = 1000;
+    private int distancia_raio = 1000;
     private Location localizacaoUsuario;
     private FusedLocationPosition fusedLocationService;
     private LocationManager myLocationManager;
@@ -158,9 +165,9 @@ public class AoRedor extends AppCompatActivity {
         if (ValidatorUtil.isNuloOuVazio(this.mapa)) {
             this.mapa = this.mapFragment.getMap();
 
-            if (!ValidatorUtil.isNuloOuVazio(this.mapa)) {
+            /* if (!ValidatorUtil.isNuloOuVazio(this.mapa)) {
                 this.mapa.setMyLocationEnabled(true);
-            }
+            } */
         }
     }
 
@@ -174,6 +181,8 @@ public class AoRedor extends AppCompatActivity {
     }
 
     private void adicionarMarcadorPosicaoUsuario() {
+        this.mapa.clear();
+
         if (ValidatorUtil.isNuloOuVazio(this.localizacaoUsuario))
             recuperarPosicaoUsuario();
 
@@ -205,7 +214,7 @@ public class AoRedor extends AppCompatActivity {
             circle = this.mapa.addCircle(new CircleOptions()
                     .center(new LatLng(this.localizacaoUsuario.getLatitude(),
                             this.localizacaoUsuario.getLongitude()))
-                    .radius(DISTANCIA_RAIO).strokeWidth(1)
+                    .radius(distancia_raio).strokeWidth(1)
                     .strokeColor(Color.BLACK));
 
             // verde: 0x7F00FF00
@@ -239,7 +248,7 @@ public class AoRedor extends AppCompatActivity {
                             new LatLng(this.localizacaoUsuario.getLatitude(), this.localizacaoUsuario.getLongitude()), new LatLng(Double.parseDouble(estabelecimento
                                     .getLatitude()), Double.parseDouble(estabelecimento.getLongitude())));
 
-                    if (result < DISTANCIA_RAIO) {
+                    if (result < distancia_raio) {
                         contadorEstabelecimentos++;
                         LatLng c = new LatLng(Double.parseDouble(estabelecimento.getLatitude()),
                                 Double.parseDouble(estabelecimento.getLongitude()));
@@ -258,7 +267,7 @@ public class AoRedor extends AppCompatActivity {
                     }
                 }
 
-                ToastUtil.criarToastLongo(AoRedor.this, contadorEstabelecimentos + " estabelecimento(s) encontrada(s) em um raio de " + (DISTANCIA_RAIO / 100) + "km.");
+                ToastUtil.criarToastLongo(AoRedor.this, contadorEstabelecimentos + " estabelecimento(s) encontrada(s) em um raio de " + (distancia_raio / 100) + "km.");
             }
 
             progressDialog.dismiss();
@@ -340,6 +349,76 @@ public class AoRedor extends AppCompatActivity {
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_aumentar_raio, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_aumentar_raio:
+                inflarAumentarRaio();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void inflarAumentarRaio() {
+        AlertDialog.Builder customDialog
+                = new AlertDialog.Builder(AoRedor.this);
+        customDialog.setTitle("Alterar raio de busca");
+
+        LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = layoutInflater.inflate(R.layout.aumentar_raio_estabelecimentos, null);
+
+        final TextView txtRaio = (TextView) view.findViewById(R.id.txtRaioEscolhido);
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
+
+        txtRaio.setText("0km");
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                distancia_raio = progress;
+                txtRaio.setText(distancia_raio+"km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        customDialog.setPositiveButton(
+                getResources().getString(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        distancia_raio = distancia_raio * 100;
+                        recuperarPosicaoUsuario();
+                    }
+                });
+
+        customDialog.setNegativeButton(getResources().getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        customDialog.setView(view);
+        customDialog.show();
     }
 
 }

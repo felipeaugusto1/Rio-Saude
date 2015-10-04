@@ -3,6 +3,10 @@ package riomaissaude.felipe.com.br.riomaissaude.models;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+import java.util.Date;
+
+import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
+
 /**
  * Created by felipe on 9/13/15.
  */
@@ -34,6 +38,7 @@ public class Estabelecimento implements ClusterItem {
     private String tipoUnidade;
     private String tipoEstabelecimento;
     private String statusEstabelecimento;
+    private String dataAlteracaoStatusEstabelecimento;
 
     public Estabelecimento() {
     }
@@ -246,11 +251,20 @@ public class Estabelecimento implements ClusterItem {
         this.statusEstabelecimento = statusEstabelecimento;
     }
 
+    public String getDataAlteracaoStatusEstabelecimento() {
+        return dataAlteracaoStatusEstabelecimento;
+    }
+
+    public void setDataAlteracaoStatusEstabelecimento(String dataAlteracaoStatusEstabelecimento) {
+        this.dataAlteracaoStatusEstabelecimento = dataAlteracaoStatusEstabelecimento;
+    }
+
     @Override
     public String toString() {
         return "Estabelecimento{" +
-                "media='" + media + '\'' +
-                "cnes='" + cnes + '\'' +
+                "id=" + id +
+                ", media='" + media + '\'' +
+                ", cnes='" + cnes + '\'' +
                 ", cnpj='" + cnpj + '\'' +
                 ", razaoSocial='" + razaoSocial + '\'' +
                 ", nomeFantasia='" + nomeFantasia + '\'' +
@@ -273,6 +287,8 @@ public class Estabelecimento implements ClusterItem {
                 ", naturezaOrganizacao='" + naturezaOrganizacao + '\'' +
                 ", tipoUnidade='" + tipoUnidade + '\'' +
                 ", tipoEstabelecimento='" + tipoEstabelecimento + '\'' +
+                ", statusEstabelecimento='" + statusEstabelecimento + '\'' +
+                ", dataAlteracaoStatusEstabelecimento=" + dataAlteracaoStatusEstabelecimento +
                 '}';
     }
 

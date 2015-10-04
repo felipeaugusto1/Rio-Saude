@@ -50,6 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ESTABELECIMENTO_TIPO_UNIDADE = "tipo_unidade";
     private static final String KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO = "tipo_estabelecimento";
     private static final String KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO = "status_estabelecimento";
+    private static final String KEY_ESTABELECIMENTO_DATA_ALTERACAO_STATUS_ESTABELECIMENTO = "data_alteracao_status_estabelecimento";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -90,7 +91,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("Deletando banco", "Deletando banco");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESTABELECIMENTO);
         onCreate(db);
     }
@@ -106,11 +106,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         deletarRegistros(db, TABLE_ESTABELECIMENTO);
     }
 
-    public boolean updateAvaliacaoEstabelecimento(int id, double media) {
+    public boolean updateAvaliacaoEstabelecimento(int id, double media, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues args = new ContentValues();
         args.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(media));
+        args.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, status);
 
         return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
     }

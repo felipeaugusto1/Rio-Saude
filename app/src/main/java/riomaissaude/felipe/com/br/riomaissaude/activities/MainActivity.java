@@ -52,9 +52,7 @@ import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -180,9 +178,9 @@ public class MainActivity extends AppCompatActivity {
         if (ValidatorUtil.isNuloOuVazio(this.mapa)) {
             this.mapa = this.mapFragment.getMap();
 
-            if (!ValidatorUtil.isNuloOuVazio(this.mapa)) {
+            /* if (!ValidatorUtil.isNuloOuVazio(this.mapa)) {
                 this.mapa.setMyLocationEnabled(true);
-            }
+            } */
         }
     }
 
@@ -445,7 +443,14 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             for (EstabelecimentoWs e: listaEstabelecimentoWs) {
                 Log.d("Indo atualizar", e.getId() + " - " + e.getMedia());
-                database.updateAvaliacaoEstabelecimento(e.getId(), e.getMedia());
+                /* for (Estabelecimento es: ListaEstabelecimentosSingleton.getInstancia().getLista()) {
+                    if (e.getId() == es.getId()) {
+                        es.setMedia(String.valueOf(e.getMedia()));
+                        es.setStatusEstabelecimento(e.getStatusEstabelecimento());
+                    }
+
+                } */
+                database.updateAvaliacaoEstabelecimento(e.getId(), e.getMedia(), e.getStatusEstabelecimento());
             }
 
             //database.updateEstabelecimentos(listaEstabelecimentoWs);
@@ -508,4 +513,8 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

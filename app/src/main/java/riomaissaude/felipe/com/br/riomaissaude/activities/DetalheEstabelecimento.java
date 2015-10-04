@@ -125,9 +125,9 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         sequence.addSequenceItem(this.toolbar, "Ajude as outras pessoas. Dê a sua avaliação ou diga a situação atual do estabelecimento, que será valida pelo dia atual.", "Ok, entendi");
 
-        sequence.addSequenceItem(this.btnComoChegar, "Crie sua rota para este estabelecimento.", "Ok, entendi");
-
         sequence.addSequenceItem(this.btnLigar, "Ligue para o estabelecimento caso necessário.", "Ok, entendi");
+
+        //sequence.addSequenceItem(this.btnComoChegar, "Crie sua rota para este estabelecimento.", "Ok, entendi");
 
         sequence.start();
     }
@@ -355,20 +355,20 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
                 estabelecimentoAtualizado = gson.fromJson(str, EstabelecimentoWs.class);
 
-                boolean b = database.updateAvaliacaoEstabelecimento(estabelecimentoAtualizado.getId(), estabelecimentoAtualizado.getMedia());
+                boolean b = database.updateAvaliacaoEstabelecimento(estabelecimentoAtualizado.getId(), estabelecimentoAtualizado.getMedia(), estabelecimentoAtualizado.getStatusEstabelecimento());
 
                 if (b) {
                     Estabelecimento e = database.getByPrimaryKey(estabelecimento.getId());
 
                     ratingBarAvaliacao.setRating(Float.parseFloat(e.getMedia()));
 
-                    Toast.makeText(DetalheEstabelecimento.this, "atualizado...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DetalheEstabelecimento.this, "Avaliação realizada com sucesso!", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
+                Toast.makeText(DetalheEstabelecimento.this, "Você precisa estar conectado a internet para realizar a avaliação.", Toast.LENGTH_LONG).show();
             }
 
         });
@@ -398,13 +398,13 @@ public class DetalheEstabelecimento extends AppCompatActivity {
                 if (b) {
                     Estabelecimento e = database.getByPrimaryKey(estabelecimento.getId());
 
-                    Toast.makeText(DetalheEstabelecimento.this, "atualizado...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DetalheEstabelecimento.this, "Situação atualizada com sucesso!", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
+                Toast.makeText(DetalheEstabelecimento.this, "Você precisa estar conectado a internet para reportar a situação.", Toast.LENGTH_LONG).show();
             }
 
         });

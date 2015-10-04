@@ -16,7 +16,6 @@ public class PreferenciasUtil {
     public static final String KEY_PREFERENCIAS_DICAS_MAPA = "dicas_mapa";
     public static final String KEY_PREFERENCIAS_DICAS_DETALHE = "dicas_detalhe";
 
-
     public static void salvarPreferencias(String key, String value, Context contexto) {
         SharedPreferences preferencias = contexto.getSharedPreferences(
                 key, Context.MODE_PRIVATE);
