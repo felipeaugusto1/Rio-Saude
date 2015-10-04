@@ -48,6 +48,7 @@ import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
@@ -185,8 +186,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void carregarEstabelecimentos() {
-        this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
-        this.listaEstabelecimentosCopia = this.listaEstabelecimentos;
+        //this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
+        //this.listaEstabelecimentosCopia = this.listaEstabelecimentos;
+
+        ListaEstabelecimentosSingleton.getInstancia().setLista(this.database.getAllEstabelecimentos());
+        this.listaEstabelecimentosCopia = ListaEstabelecimentosSingleton.getInstancia().getLista();
+        this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista();
 
         if (ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) || this.listaEstabelecimentos.size() == 0) {
             try {
@@ -237,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             this.database.addEstabelecimentos(this.listaEstabelecimentos);
+            ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
         }
 
     }
@@ -516,5 +522,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setUpClusterer();
     }
+
 }

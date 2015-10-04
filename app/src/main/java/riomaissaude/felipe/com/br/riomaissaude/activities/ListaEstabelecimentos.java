@@ -40,6 +40,7 @@ import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.extras.RecyclerViewAdapterEstabelecimentos;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.provider.SearchableProvider;
+import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
@@ -159,8 +160,8 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         this.listaEstabelecimentos = new ArrayList<Estabelecimento>();
         this.listaEstabelecimentosAux = new ArrayList<Estabelecimento>();
 
-        this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
-        this.listaEstabelecimentosAux = this.database.getAllEstabelecimentos();
+        this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista(); //this.database.getAllEstabelecimentos();
+        this.listaEstabelecimentosAux = ListaEstabelecimentosSingleton.getInstancia().getLista(); //this.database.getAllEstabelecimentos();
     }
 
     @Override

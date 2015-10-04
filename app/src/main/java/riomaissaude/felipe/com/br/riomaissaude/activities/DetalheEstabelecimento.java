@@ -47,6 +47,7 @@ import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
@@ -106,7 +107,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         if (!ValidatorUtil.isNuloOuVazio(b)) {
             String estabelecimento_id = b.getString("estabelecimento_id");
-            this.estabelecimento = this.database.getByPrimaryKey(Integer.parseInt(estabelecimento_id));
+            this.estabelecimento = ListaEstabelecimentosSingleton.getInstancia().getLista().get(Integer.parseInt(estabelecimento_id)); //this.database.getByPrimaryKey(Integer.parseInt(estabelecimento_id));
         }
 
         percorrerOcorrencias();
@@ -359,6 +360,9 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
                 if (b) {
                     Estabelecimento e = database.getByPrimaryKey(estabelecimento.getId());
+                    /* Adicionando o valor alterado no objeto que se encontra na lista singleton utilizado por todo o aplicativo */
+                    Estabelecimento eLista = ListaEstabelecimentosSingleton.getInstancia().getLista().get(e.getId());
+                    eLista.setMedia(String.valueOf(e.getMedia()));
 
                     ratingBarAvaliacao.setRating(Float.parseFloat(e.getMedia()));
 
@@ -397,6 +401,9 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
                 if (b) {
                     Estabelecimento e = database.getByPrimaryKey(estabelecimento.getId());
+                    /* Adicionando o valor alterado no objeto que se encontra na lista singleton utilizado por todo o aplicativo */
+                    Estabelecimento eLista = ListaEstabelecimentosSingleton.getInstancia().getLista().get(e.getId());
+                    eLista.setStatusEstabelecimento(e.getStatusEstabelecimento());
 
                     Toast.makeText(DetalheEstabelecimento.this, "Situação atualizada com sucesso!", Toast.LENGTH_LONG).show();
                 }
