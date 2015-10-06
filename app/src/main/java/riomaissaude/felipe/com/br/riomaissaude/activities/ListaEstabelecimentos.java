@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -46,6 +49,17 @@ import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 
 /**
+ * Activity responsável por listar todos os estabelecimentos.
+ *
+ * Principais características:
+ *
+ * 1 - É possível pesquisar por estabelecimentos, informando uma palvra chave, ou falando
+ * uma palavra chave (tipo de especialidade, bairro, nome).
+ *
+ * 2 - Esta activity é formada por CardViews.
+ *
+ * 3 - Ao clicar em um cardview, é aberta a activity DetalheEstabelecimento.
+ *
  * Created by felipe on 9/13/15.
  */
 public class ListaEstabelecimentos extends AppCompatActivity {
@@ -63,6 +77,8 @@ public class ListaEstabelecimentos extends AppCompatActivity {
     private CoordinatorLayout layoutListaEstabelecimentos;
 
     private DatabaseHandler database;
+
+    private Drawer navigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +111,23 @@ public class ListaEstabelecimentos extends AppCompatActivity {
                 refreshContent();
             }
         }); */
+
+        this.navigationDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(this.toolbar)
+                .build();
+
+        this.navigationDrawer.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         carregarEstabelecimentos();
 

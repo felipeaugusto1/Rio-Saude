@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 
 /**
+ * Classe que utiliza o padrão de projeto
+ * Singleton. Utiliza a mesma lista de Estabelecimentos por todo o aplicativo,
+ * enquanto o aplicativo estiver em memória no dispositivo.
+ *
  * Created by felipe on 10/4/15.
  */
 public class ListaEstabelecimentosSingleton {
@@ -23,6 +29,18 @@ public class ListaEstabelecimentosSingleton {
 
     public void setLista(List<Estabelecimento> lista) {
         this.lista = lista;
+    }
+
+    /**
+     * Atualiza os status de todos os estabelecimentos para Não Informado.
+     */
+    public void resetarStatusEstabelecimentos() {
+        if (!ValidatorUtil.isNuloOuVazio(this.lista)) {
+            for (Estabelecimento e :this.lista) {
+                if (!e.getStatusEstabelecimento().equalsIgnoreCase(StatusEstabelecimento.SEM_INFORMACAO))
+                    e.setStatusEstabelecimento(StatusEstabelecimento.SEM_INFORMACAO);
+            }
+        }
     }
 
 }

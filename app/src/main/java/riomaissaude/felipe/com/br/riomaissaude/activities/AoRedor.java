@@ -49,6 +49,18 @@ import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 
 /**
+ * Activity responsável por exibir a localização do usuário, e os estabelecimentos
+ * ao seu redor, dado um raio.
+ *
+ * Principais características:
+ *
+ * 1 - Para recuperar a posição do usuário, é necessário que o GPS esteja ativado.
+ *
+ * 2 - Para recuperar a posição do usuário, é utilziado o FusedLocationProvider,
+ * para garantir uma localização mais precisa.
+ *
+ * 3 - O raio pode ser alterado de 0 a 50km.
+ *
  * Created by felipe on 9/20/15.
  */
 public class AoRedor extends AppCompatActivity {

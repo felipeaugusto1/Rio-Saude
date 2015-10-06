@@ -6,10 +6,17 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
+ * Classe que possui alguns métodos úteis para validação de objetos ou view.
+ *
  * Created by felipe on 9/13/15.
  */
 public class ValidatorUtil {
 
+    /**
+     * Verifica se o objeto é nulo ou está vazio.
+     * @param objeto
+     * @return
+     */
     public static boolean isNuloOuVazio(Object objeto) {
         if (objeto == null)
             return true;
@@ -23,6 +30,13 @@ public class ValidatorUtil {
         return false;
     }
 
+    /**
+     * Verifica se um campo de entrada de texto está em branco,
+     * caseo esteja, será exibido uma mensagem informativa..
+     * @param pView
+     * @param pMessage
+     * @return
+     */
     public static boolean validarCampoEmBranco(View pView, String pMessage) {
         if (pView instanceof EditText) {
             EditText edText = (EditText) pView;

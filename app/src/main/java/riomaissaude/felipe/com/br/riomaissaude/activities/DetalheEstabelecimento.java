@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +38,9 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import org.apache.http.Header;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.R;
@@ -56,6 +57,25 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 
 /**
+ * Activity responsável por exibir todos os detalhes de um
+ * determinado Estabelecimento
+ *
+ * Principais características:
+ *
+ * 1 - Exibe um mapa com a localização do estabelecimento.
+ *
+ * 2 - Exibe um botão onde abre no Google Maps a localização do estabelecimentos,
+ * para que seja possível criar rotas.
+ *
+ * 3 - É possível ligar para o telefone do estabelecimento.
+ *
+ * 4 - É possível avaliar um estabelecimento, através do RatingBar,
+ * onse se dá uma nota de 0 a 5 ao mesmo. A média é calculada através da
+ * soma total dos votos/quantidade total de votos.
+ *
+ * 5 - É possível informar o status atual do estabelecimento.
+ * Ver classe StatusEstabelecimento.
+ *
  * Created by felipe on 9/4/15.
  */
 public class DetalheEstabelecimento extends AppCompatActivity {
@@ -162,9 +182,9 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         if (this.mapa == null) {
             this.mapa = this.mapFragment.getMap();
 
-            if (this.mapa != null) {
+            /* if (this.mapa != null) {
                 this.mapa.setMyLocationEnabled(true);
-            }
+            } */
         }
     }
 
@@ -271,7 +291,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
         final CharSequence[] items = getStatusEstabelecimentos().toArray(new CharSequence[this.getStatusEstabelecimentos().size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Situação Atual");
+        builder.setTitle("Situação Atual em " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
         builder.setSingleChoiceItems(items, 0, null)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {

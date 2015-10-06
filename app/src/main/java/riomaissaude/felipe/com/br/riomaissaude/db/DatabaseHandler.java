@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.wifi.WifiConfiguration;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -12,9 +13,13 @@ import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
+import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 
 /**
+ *
+ * Classe responsável por todo o acesso do aplicativo ao banco de dados.
+ *
  * Created by felipe on 9/21/15.
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -56,6 +61,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     *
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ESTABELECIMENTO_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ESTABELECIMENTO + "("
@@ -89,23 +98,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_ESTABELECIMENTO_TABLE);
     }
 
+    /**
+     *
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESTABELECIMENTO);
         onCreate(db);
     }
 
+    /**
+     *
+     * @param db
+     * @param tableName
+     */
     private void deletarRegistros(SQLiteDatabase db, String tableName) {
         //db.execSQL("delete from " + tableName);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESTABELECIMENTO);
         onCreate(db);
     }
 
+    /**
+     *
+     */
     public void deletarEstabelecimentos() {
         SQLiteDatabase db = this.getWritableDatabase();
         deletarRegistros(db, TABLE_ESTABELECIMENTO);
     }
 
+    /**
+     * Atualiza a média e o status de um estabelecimento no banco de dados.
+     *
+     * @param id
+     * @param media
+     * @param status
+     * @return
+     */
     public boolean updateAvaliacaoEstabelecimento(int id, double media, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -113,18 +144,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(media));
         args.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, status);
 
-        return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
+        String where = KEY_ESTABELECIMENTO_ID + "=" + id;
+
+        return db.update(TABLE_ESTABELECIMENTO, args, where, null) > 0;
     }
 
+    /**
+     * Atualiza o status de um estabelecimento no banco de dados.
+     *
+     * @param id
+     * @param status
+     * @return
+     */
     public boolean updateStatusEstabelecimento(int id, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues args = new ContentValues();
         args.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, status);
 
-        return db.update(TABLE_ESTABELECIMENTO, args, KEY_ESTABELECIMENTO_ID + "=" + id, null) > 0;
+        String where = KEY_ESTABELECIMENTO_ID + "=" + id;
+
+        return db.update(TABLE_ESTABELECIMENTO, args, where, null) > 0;
     }
 
+    /**
+     * Atualiza o status de todos os estabelecimentos no banco de dados para Não Informado.
+     */
+    public void resetarStatusEstabelecimentos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, StatusEstabelecimento.SEM_INFORMACAO);
+
+        String where = KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO + " != '" +StatusEstabelecimento.SEM_INFORMACAO +"'";
+
+        db.update(TABLE_ESTABELECIMENTO, args, where, null);
+    }
+
+    /**
+     * Inseri uma lista de estabelecimentos no banco de dados.
+     *
+     * @param estabelecimentos
+     */
     public void addEstabelecimentos(List<Estabelecimento> estabelecimentos) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -165,6 +226,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Busca todos os bairros distintos no banco de dados.
+     *
+     * @return
+     */
     public List<String> getAllBairros() {
         List<String> bairros = new ArrayList<String>();
 
@@ -183,6 +249,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return bairros;
     }
 
+    /**
+     * Busca todos os estabelecimentos no banco de dados.
+     *
+     * @return
+     */
     public List<Estabelecimento> getAllEstabelecimentos() {
         List<Estabelecimento> listaEstabelecimentos = new ArrayList<Estabelecimento>();
         String selectQuery = "SELECT  * FROM " + TABLE_ESTABELECIMENTO;// + " limit 2000";
@@ -228,6 +299,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return listaEstabelecimentos;
     }
 
+    /**
+     * Busca um estabelecimento com um determinado id no banco de dados.
+     *
+     * @param id
+     * @return
+     */
     public Estabelecimento getByPrimaryKey(int id) {
         String selectQuery = "SELECT  * FROM " + TABLE_ESTABELECIMENTO + " WHERE "
                 + KEY_ESTABELECIMENTO_ID + " = " + id;

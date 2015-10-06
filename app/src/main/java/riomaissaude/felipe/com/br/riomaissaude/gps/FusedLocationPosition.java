@@ -14,6 +14,9 @@ import com.google.android.gms.location.LocationServices;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Realiza a implementação do FusedLocationProviderApi do Google.
+ */
 public class FusedLocationPosition implements LocationListener,
 		GoogleApiClient.ConnectionCallbacks,
 		GoogleApiClient.OnConnectionFailedListener {

@@ -41,6 +41,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import riomaissaude.felipe.com.br.riomaissaude.R;
@@ -51,10 +52,33 @@ import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
+/**
+ *
+ * Activity responsável por exibir o mapa com todos os estabelecimentos
+ * de saúde do estado do RJ.
+ *
+ * Principais características:
+ *
+ * 1 - Ao abrir o aplicativo pela primeira vez, é realizado o cadastro de todos os
+ * estabelecimentos no banco de dados.
+ *
+ * 2 - Popula o singleton ListaEstabelecimentosSingles, que é utilizado por todo o aplicativo.
+ *
+ * 3 - Ao clicar em um marcador, é aberto a activity DetalheEstabelecimento.
+ *
+ * 4 - Ao abrir o aplicativo, é realizada a sincronização com o WS, de todos os Estabelecimentos
+ * que possuem media diferente de zero ou status diferente de Não Informado.
+ *
+ * 5 - Ao abrir o aplicativo pela primeira vez no dia, é alterado o status de todos
+ * os estabelecimentos para Não Informado.
+ *
+ * Created by felipe on 9/13/15.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private List<Estabelecimento> listaEstabelecimentos;
@@ -94,11 +118,12 @@ public class MainActivity extends AppCompatActivity {
         new CarregarDadosMapa().execute("Carregando...");
 
         if (isConectado())
-            buscarEstabelecimentosWs();
+            buscarEstabelecimentosAlteradosWs();
 
         if (PreferenciasUtil.getPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DICAS_MAPA, MainActivity.this).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO))
             dicas();
 
+        checagemStatusDiaria();
     }
 
     private void dicas() {
@@ -190,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
         //this.listaEstabelecimentosCopia = this.listaEstabelecimentos;
 
         ListaEstabelecimentosSingleton.getInstancia().setLista(this.database.getAllEstabelecimentos());
-        this.listaEstabelecimentosCopia = ListaEstabelecimentosSingleton.getInstancia().getLista();
-        this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista();
+        this.listaEstabelecimentosCopia = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
+        this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
 
         if (ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) || this.listaEstabelecimentos.size() == 0) {
             try {
@@ -460,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //database.updateEstabelecimentos(listaEstabelecimentoWs);
-            return "finalizado!!!";
+            return "Finalizado!";
         }
 
         @Override
@@ -475,7 +500,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void buscarEstabelecimentosWs() {
+    private void buscarEstabelecimentosAlteradosWs() {
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(WebService.ENDERECO_WS.concat("estabelecimento/listar"), new AsyncHttpResponseHandler() {
@@ -522,7 +547,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0) {
+            this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
+            ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
+        }
+
         setUpClusterer();
+    }
+
+    private void checagemStatusDiaria() {
+        Calendar calendar = Calendar.getInstance();
+        int diaAtual = calendar.get(Calendar.DAY_OF_WEEK);
+
+        String valor = PreferenciasUtil.getPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DIA_ATUAL_VERIFICACAO, MainActivity.this);
+        if (valor.equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO) || (StringUtil.isNumero(valor) && Integer.parseInt(valor) != diaAtual)) {
+            this.database.resetarStatusEstabelecimentos();
+            ListaEstabelecimentosSingleton.getInstancia().resetarStatusEstabelecimentos();
+            PreferenciasUtil.salvarPreferencias(PreferenciasUtil.KEY_PREFERENCIAS_DIA_ATUAL_VERIFICACAO, String.valueOf(diaAtual), MainActivity.this);
+        }
     }
 
 }

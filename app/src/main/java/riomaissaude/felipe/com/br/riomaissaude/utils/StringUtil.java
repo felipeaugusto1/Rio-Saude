@@ -4,6 +4,9 @@ import android.text.TextUtils;
 
 import java.text.Normalizer;
 
+/**
+ * Classe utilitária onde possui alguns métodos importantes relacionados a String.
+ */
 public final class StringUtil {
 
 	public static boolean isNumero(String palavra) {

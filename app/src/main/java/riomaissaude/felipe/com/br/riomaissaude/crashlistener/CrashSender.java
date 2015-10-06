@@ -12,6 +12,9 @@ import com.loopj.android.http.SyncHttpClient;
 
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 
+/**
+ * Classe responsável por enviar um erro do aplicativo no dispositivo, para o WS.
+ */
 public class CrashSender implements ReportSender {
 
 	@Override
