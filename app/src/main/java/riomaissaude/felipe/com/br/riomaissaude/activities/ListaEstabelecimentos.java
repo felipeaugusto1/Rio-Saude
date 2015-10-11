@@ -1,8 +1,10 @@
 package riomaissaude.felipe.com.br.riomaissaude.activities;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +44,7 @@ import riomaissaude.felipe.com.br.riomaissaude.R;
 import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
 import riomaissaude.felipe.com.br.riomaissaude.extras.RecyclerViewAdapterEstabelecimentos;
 import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
 import riomaissaude.felipe.com.br.riomaissaude.provider.SearchableProvider;
 import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
@@ -79,6 +82,8 @@ public class ListaEstabelecimentos extends AppCompatActivity {
     private DatabaseHandler database;
 
     private Drawer navigationDrawer;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +136,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
         carregarEstabelecimentos();
 
-        this.adapter = new RecyclerViewAdapterEstabelecimentos(this.listaEstabelecimentosAux);
+        this.adapter = new RecyclerViewAdapterEstabelecimentos(ListaEstabelecimentosSingleton.getInstancia().getLista());
         recyclerView.setAdapter(adapter);
 
         handleSearch(getIntent());
@@ -140,11 +145,12 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
     private void handleSearch(Intent intent) {
         if (Intent.ACTION_SEARCH.equalsIgnoreCase(intent.getAction())) {
+
             String q = intent.getStringExtra(SearchManager.QUERY);
 
-            filtrarEstabelecimentos(q);
+            //filtrarEstabelecimentos(q);
+            new PesquisarEstabelecimentos().execute(q);
             this.toolbar.setTitle(q);
-            this.toolbar.setSubtitle(this.listaEstabelecimentosAux.size() + " estabelecimentos encontrados.");
 
             SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY, SearchableProvider.MODE);
             searchRecentSuggestions.saveRecentQuery(q, null);
@@ -160,22 +166,18 @@ public class ListaEstabelecimentos extends AppCompatActivity {
     private void filtrarEstabelecimentos(String q) {
         this.listaEstabelecimentosAux.clear();
 
-        for (Estabelecimento estabelecimento : this.listaEstabelecimentos) {
-            if (StringUtil.retirarAcentosDaPalavra(estabelecimento.getNomeFantasia()).toLowerCase().contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase())) || StringUtil.retirarAcentosDaPalavra(estabelecimento.getBairro()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))) {
+        for (Estabelecimento estabelecimento : ListaEstabelecimentosSingleton.getInstancia().getLista()) {
+            if (StringUtil.retirarAcentosDaPalavra(estabelecimento.getNomeFantasia()).toLowerCase().contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
+                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getBairro().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
+                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getComplemento().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
+                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getLogradouro().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
+                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getRazaoSocial().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
+                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getTipoEstabelecimento().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
+                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getAtividadeDestino().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))) {
+                Log.d("adding", estabelecimento.getRazaoSocial());
                 this.listaEstabelecimentosAux.add(estabelecimento);
             }
         }
-
-        if (this.listaEstabelecimentosAux.isEmpty()) {
-            ToastUtil.criarToastLongoCentralizado(ListaEstabelecimentos.this, "Nenhum registro encontrado.");
-        } else {
-            if (this.listaEstabelecimentosAux.size() == 1)
-                ToastUtil.criarToastLongoCentralizado(ListaEstabelecimentos.this, this.listaEstabelecimentosAux.size() + " registro encontrado.");
-            else
-                ToastUtil.criarToastLongoCentralizado(ListaEstabelecimentos.this, this.listaEstabelecimentosAux.size() + " registros encontrados.");
-        }
-
-        this.adapter.notifyDataSetChanged();
     }
 
     private void refreshContent() {
@@ -193,8 +195,10 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         this.listaEstabelecimentos = new ArrayList<Estabelecimento>();
         this.listaEstabelecimentosAux = new ArrayList<Estabelecimento>();
 
-        this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista(); //this.database.getAllEstabelecimentos();
-        this.listaEstabelecimentosAux = ListaEstabelecimentosSingleton.getInstancia().getLista(); //this.database.getAllEstabelecimentos();
+        //this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
+        //this.listaEstabelecimentosAux = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
+
+        //Log.d("ttttamanho da singleton", this.listaEstabelecimentos+"");
     }
 
     @Override
@@ -234,4 +238,47 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    private class PesquisarEstabelecimentos extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(ListaEstabelecimentos.this);
+            dialog.setTitle("Aguarde");
+            dialog.setMessage("Pesquisando estabelecimentos...");
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            filtrarEstabelecimentos(params[0]);
+            return "Finalizado!";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String resultado) {
+            dialog.dismiss();
+
+            toolbar.setSubtitle(listaEstabelecimentosAux.size() + " estabelecimentos encontrados.");
+
+            if (listaEstabelecimentosAux.isEmpty()) {
+                ToastUtil.criarToastLongoCentralizado(getApplicationContext(), "Nenhum registro encontrado.");
+            } else {
+                if (listaEstabelecimentosAux.size() == 1)
+                    ToastUtil.criarToastLongoCentralizado(getApplicationContext(), listaEstabelecimentosAux.size() + " registro encontrado.");
+                else
+                    ToastUtil.criarToastLongoCentralizado(getApplicationContext(), listaEstabelecimentosAux.size() + " registros encontrados.");
+            }
+
+            adapter.notifyDataSetChanged();
+
+        }
+    }
 }

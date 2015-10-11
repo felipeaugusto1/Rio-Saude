@@ -218,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
         this.listaEstabelecimentosCopia = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
         this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
 
+        Log.d("estabelecimento", this.listaEstabelecimentos.get(0).toString());
+
         if (ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) || this.listaEstabelecimentos.size() == 0) {
             dialog.setMessage("Carregando marcadores no mapa pela primeira vez, pode levar 1 minuto...");
             try {
@@ -387,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     listaEstabelecimentos = new ArrayList<Estabelecimento>();
                                     for (String itemSelecionado : itensSelecionados) {
-                                        for (Estabelecimento e : listaEstabelecimentosCopia) {
+                                        for (Estabelecimento e : ListaEstabelecimentosSingleton.getInstancia().getLista()) {
                                             if (StringUtil.retirarAcentosDaPalavra(itemSelecionado.trim()).equalsIgnoreCase(StringUtil.retirarAcentosDaPalavra(e.getBairro())))
                                                 listaEstabelecimentos.add(e);
                                         }
