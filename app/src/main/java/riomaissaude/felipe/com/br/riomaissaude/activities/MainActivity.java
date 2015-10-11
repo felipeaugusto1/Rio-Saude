@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> bairros;
     private List<EstabelecimentoWs> listaEstabelecimentoWs;
 
-    private MaterialDialog dialog;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
         this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
 
         if (ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) || this.listaEstabelecimentos.size() == 0) {
+            dialog.setMessage("Carregando marcadores no mapa pela primeira vez, pode levar 1 minuto...");
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("estabelecimentos.csv")));
                 String line;
@@ -286,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_ao_redor, menu);
         getMenuInflater().inflate(R.menu.menu_lista_estabelecimentos, menu);
         getMenuInflater().inflate(R.menu.menu_filtrar, menu);
@@ -299,13 +299,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_lista_estabelecimentos) {
-
-            /* dialog = new MaterialDialog.Builder(MainActivity.this)
-                    .title(getResources().getString(R.string.aguarde))
-                    .content("Listando estabelecimentos...")
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(true).show(); */
-
             startActivity(new Intent(MainActivity.this, ListaEstabelecimentos.class));
         } else if (id == R.id.action_filtrar) {
             criarDialogSelecionarTiposOcorrencia();
@@ -359,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
 
         final CharSequence[] items = this.bairros.toArray(new CharSequence[this.bairros.size()]);
 
-        // arraylist to keep the selected items
         final ArrayList seletedItems = new ArrayList();
         final ArrayList<String> itensSelecionados = new ArrayList<String>();
 
@@ -424,8 +416,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class CarregarDadosMapa extends AsyncTask<String, Integer, String> {
-
-        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
