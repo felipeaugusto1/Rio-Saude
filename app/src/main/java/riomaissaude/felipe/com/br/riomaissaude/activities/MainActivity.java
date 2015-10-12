@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -52,7 +51,6 @@ import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
@@ -303,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_lista_estabelecimentos) {
             startActivity(new Intent(MainActivity.this, ListaEstabelecimentos.class));
         } else if (id == R.id.action_filtrar) {
-            criarDialogSelecionarTiposOcorrencia();
+            criarDialogSelecionarBairros();
         } else if (id == R.id.action_ao_redor) {
             startActivity(new Intent(MainActivity.this, AoRedor.class));
         }
@@ -349,9 +347,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void criarDialogSelecionarTiposOcorrencia() {
+    private void criarDialogSelecionarBairros() {
         AlertDialog dialog;
 
+        this.bairros.add(0, "Todos");
         final CharSequence[] items = this.bairros.toArray(new CharSequence[this.bairros.size()]);
 
         final ArrayList seletedItems = new ArrayList();
@@ -385,7 +384,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 if (itensSelecionados.contains("Todos")) {
-                                    listaEstabelecimentos = listaEstabelecimentosCopia;
+                                    if (listaEstabelecimentos.size() != 4466)
+                                        listaEstabelecimentos = listaEstabelecimentosCopia;
                                 } else {
                                     listaEstabelecimentos = new ArrayList<Estabelecimento>();
                                     for (String itemSelecionado : itensSelecionados) {

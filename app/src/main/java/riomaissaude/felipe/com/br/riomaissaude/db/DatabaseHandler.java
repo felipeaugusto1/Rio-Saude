@@ -168,6 +168,65 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
+     * Procurar estabelecimentos dado um nome.
+     * Procura pelo tipo do estabelecimento, nome, endereço...
+     * @param nome
+     * @return
+     */
+    public List<Estabelecimento> findByNome(String nome) {
+        List<Estabelecimento> listaEstabelecimentos = new ArrayList<Estabelecimento>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_ESTABELECIMENTO + " WHERE "
+                + KEY_ESTABELECIMENTO_NOME_FANTASIA +" like '%" +nome+"%'" +
+                " OR " + KEY_ESTABELECIMENTO_BAIRRO +" like '%" +nome +"%'" +
+                " OR " + KEY_ESTABELECIMENTO_COMPLEMENTO +" like '%" +nome +"%'" +
+                " OR " + KEY_ESTABELECIMENTO_LOGRADOURO +" like '%" +nome +"%'" +
+                " OR " + KEY_ESTABELECIMENTO_RAZAO_SOCIAL +" like '%" +nome +"%'" +
+                " OR " + KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO +" like '%" +nome +"%'" +
+                " OR " + KEY_ESTABELECIMENTO_ATIVIDADE_DESTINO +" like '%" +nome +"%'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Estabelecimento estabelecimento = new Estabelecimento();
+                estabelecimento.setId(Integer.parseInt(cursor.getString(0)));
+
+                estabelecimento.setCnes(cursor.getString(1));
+                estabelecimento.setCnpj(cursor.getString(2));
+                estabelecimento.setRazaoSocial(cursor.getString(3));
+                estabelecimento.setNomeFantasia(cursor.getString(4));
+                estabelecimento.setLogradouro(cursor.getString(5));
+                estabelecimento.setNumero(cursor.getString(6));
+                estabelecimento.setComplemento(cursor.getString(7));
+                estabelecimento.setBairro(cursor.getString(8));
+                estabelecimento.setCep(cursor.getString(9));
+                estabelecimento.setTelefone(cursor.getString(10));
+                estabelecimento.setFax(cursor.getString(11));
+                estabelecimento.setEmail(cursor.getString(12));
+                estabelecimento.setLatitude(cursor.getString(13));
+                estabelecimento.setLongitude(cursor.getString(14));
+                estabelecimento.setDataAtualizacaoCoordenadas(cursor.getString(15));
+                estabelecimento.setCodigoEsferaAdministrativa(cursor.getString(16));
+                estabelecimento.setEsferaAdministrativa(cursor.getString(17));
+                estabelecimento.setCodigoDaAtividade(cursor.getString(18));
+                estabelecimento.setAtividadeDestino(cursor.getString(19));
+                estabelecimento.setCodigoNaturezaOrganizacao(cursor.getString(20));
+                estabelecimento.setNaturezaOrganizacao(cursor.getString(21));
+                estabelecimento.setTipoUnidade(cursor.getString(22));
+                estabelecimento.setTipoEstabelecimento(cursor.getString(23));
+                estabelecimento.setMedia(cursor.getString(24));
+                estabelecimento.setStatusEstabelecimento(cursor.getString(25));
+
+                listaEstabelecimentos.add(estabelecimento);
+            } while (cursor.moveToNext());
+        }
+
+        return listaEstabelecimentos;
+    }
+
+    /**
      * Atualiza o status de todos os estabelecimentos no banco de dados para Não Informado.
      */
     public void resetarStatusEstabelecimentos() {

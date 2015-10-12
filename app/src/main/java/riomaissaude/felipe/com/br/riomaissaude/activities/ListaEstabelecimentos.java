@@ -136,7 +136,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
         carregarEstabelecimentos();
 
-        this.adapter = new RecyclerViewAdapterEstabelecimentos(ListaEstabelecimentosSingleton.getInstancia().getLista());
+        this.adapter = new RecyclerViewAdapterEstabelecimentos(this.listaEstabelecimentosAux);
         recyclerView.setAdapter(adapter);
 
         handleSearch(getIntent());
@@ -148,8 +148,8 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
             String q = intent.getStringExtra(SearchManager.QUERY);
 
-            //filtrarEstabelecimentos(q);
-            new PesquisarEstabelecimentos().execute(q);
+            filtrarEstabelecimentos(q);
+            //new PesquisarEstabelecimentos().execute(q);
             this.toolbar.setTitle(q);
 
             SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY, SearchableProvider.MODE);
@@ -166,7 +166,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
     private void filtrarEstabelecimentos(String q) {
         this.listaEstabelecimentosAux.clear();
 
-        for (Estabelecimento estabelecimento : ListaEstabelecimentosSingleton.getInstancia().getLista()) {
+        /* for (Estabelecimento estabelecimento : ListaEstabelecimentosSingleton.getInstancia().getLista()) {
             if (StringUtil.retirarAcentosDaPalavra(estabelecimento.getNomeFantasia()).toLowerCase().contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
                     || StringUtil.retirarAcentosDaPalavra(estabelecimento.getBairro().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
                     || StringUtil.retirarAcentosDaPalavra(estabelecimento.getComplemento().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
@@ -177,7 +177,22 @@ public class ListaEstabelecimentos extends AppCompatActivity {
                 Log.d("adding", estabelecimento.getRazaoSocial());
                 this.listaEstabelecimentosAux.add(estabelecimento);
             }
+        } */
+
+        this.listaEstabelecimentosAux.addAll(this.database.findByNome(q));
+
+        this.toolbar.setSubtitle(this.listaEstabelecimentosAux.size() + " estabelecimentos encontrados.");
+
+        if (this.listaEstabelecimentosAux.isEmpty()) {
+            ToastUtil.criarToastLongoCentralizado(getApplicationContext(), "Nenhum registro encontrado.");
+        } else {
+            if (this.listaEstabelecimentosAux.size() == 1)
+                ToastUtil.criarToastLongoCentralizado(getApplicationContext(), this.listaEstabelecimentosAux.size() + " registro encontrado.");
+            else
+                ToastUtil.criarToastLongoCentralizado(getApplicationContext(), this.listaEstabelecimentosAux.size() + " registros encontrados.");
         }
+
+        this.adapter.notifyDataSetChanged();
     }
 
     private void refreshContent() {
@@ -195,10 +210,8 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         this.listaEstabelecimentos = new ArrayList<Estabelecimento>();
         this.listaEstabelecimentosAux = new ArrayList<Estabelecimento>();
 
-        //this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
-        //this.listaEstabelecimentosAux = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
-
-        //Log.d("ttttamanho da singleton", this.listaEstabelecimentos+"");
+        this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
+        this.listaEstabelecimentosAux = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
     }
 
     @Override
@@ -281,4 +294,5 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
         }
     }
+
 }

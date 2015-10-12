@@ -127,7 +127,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         if (!ValidatorUtil.isNuloOuVazio(b)) {
             String estabelecimento_id = b.getString("estabelecimento_id");
-            this.estabelecimento = ListaEstabelecimentosSingleton.getInstancia().getLista().get(Integer.parseInt(estabelecimento_id)); //this.database.getByPrimaryKey(Integer.parseInt(estabelecimento_id));
+            this.estabelecimento = this.database.getByPrimaryKey(Integer.parseInt(estabelecimento_id)); //ListaEstabelecimentosSingleton.getInstancia().getLista().get(Integer.parseInt(estabelecimento_id));
         }
 
         percorrerOcorrencias();
