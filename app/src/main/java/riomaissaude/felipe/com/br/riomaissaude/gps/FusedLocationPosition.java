@@ -87,6 +87,8 @@ public class FusedLocationPosition implements LocationListener,
 	}
 
 	public Location getLocation() {
+		//this.location.setLatitude(-22.927342);
+		//this.location.setLongitude(-43.371760);
 		return this.location;
 	}
 

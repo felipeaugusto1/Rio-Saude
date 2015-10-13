@@ -285,6 +285,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addEstabelecimento(Estabelecimento estabelecimento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values;
+
+            values = new ContentValues();
+            values.put(KEY_ESTABELECIMENTO_ID, estabelecimento.getId());
+            values.put(KEY_ESTABELECIMENTO_CNES, estabelecimento.getCnes());
+            values.put(KEY_ESTABELECIMENTO_CNPJ, estabelecimento.getCnpj());
+            values.put(KEY_ESTABELECIMENTO_RAZAO_SOCIAL, estabelecimento.getRazaoSocial());
+            values.put(KEY_ESTABELECIMENTO_NOME_FANTASIA, estabelecimento.getNomeFantasia());
+            values.put(KEY_ESTABELECIMENTO_LOGRADOURO, estabelecimento.getLogradouro());
+            values.put(KEY_ESTABELECIMENTO_NUMERO, estabelecimento.getNumero());
+            values.put(KEY_ESTABELECIMENTO_COMPLEMENTO, estabelecimento.getComplemento());
+            values.put(KEY_ESTABELECIMENTO_BAIRRO, estabelecimento.getBairro());
+            values.put(KEY_ESTABELECIMENTO_CEP, estabelecimento.getCep());
+            values.put(KEY_ESTABELECIMENTO_TELEFONE, estabelecimento.getTelefone());
+            values.put(KEY_ESTABELECIMENTO_FAX, estabelecimento.getFax());
+            values.put(KEY_ESTABELECIMENTO_EMAIL, estabelecimento.getEmail());
+            values.put(KEY_ESTABELECIMENTO_LATITUDE, estabelecimento.getLatitude());
+            values.put(KEY_ESTABELECIMENTO_LONGITUDE, estabelecimento.getLongitude());
+            values.put(KEY_ESTABELECIMENTO_DATA_ATUALIZACAO_COORDENADAS, estabelecimento.getDataAtualizacaoCoordenadas());
+            values.put(KEY_ESTABELECIMENTO_CODIGO_ESFERA_ADMINISTRATIVA, estabelecimento.getCodigoEsferaAdministrativa());
+            values.put(KEY_ESTABELECIMENTO_ESFERA_ADMINISTRATIVA, estabelecimento.getEsferaAdministrativa());
+            values.put(KEY_ESTABELECIMENTO_CODIGO_DA_ATIVIDADE, estabelecimento.getCodigoDaAtividade());
+            values.put(KEY_ESTABELECIMENTO_ATIVIDADE_DESTINO, estabelecimento.getAtividadeDestino());
+            values.put(KEY_ESTABELECIMENTO_CODIGO_NATUREZA_ORGANIZACAO, estabelecimento.getCodigoNaturezaOrganizacao());
+            values.put(KEY_ESTABELECIMENTO_NATUREZA_ORGANIZACAO, estabelecimento.getNaturezaOrganizacao());
+            values.put(KEY_ESTABELECIMENTO_TIPO_UNIDADE, estabelecimento.getTipoUnidade());
+            values.put(KEY_ESTABELECIMENTO_TIPO_ESTABELECIMENTO, estabelecimento.getTipoEstabelecimento());
+            values.put(KEY_ESTABELECIMENTO_MEDIA_VOTACAO, String.valueOf(0));
+            values.put(KEY_ESTABELECIMENTO_STATUS_ESTABELECIMENTO, estabelecimento.getStatusEstabelecimento());
+
+            db.insert(TABLE_ESTABELECIMENTO, null, values);
+
+
+        db.close();
+    }
+
     /**
      * Busca todos os bairros distintos no banco de dados.
      *

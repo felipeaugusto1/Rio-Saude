@@ -144,7 +144,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "");
 
-        sequence.addSequenceItem(this.toolbar, "Ajude as outras pessoas. Dê a sua avaliação ou diga a situação atual do estabelecimento, que será valida pelo dia atual.", "Ok, entendi");
+        sequence.addSequenceItem(this.toolbar, "Ajude as outras pessoas. Dê a sua avaliação ou diga a situação atual do estabelecimento, que será válida pelo dia atual.", "Ok, entendi");
 
         sequence.addSequenceItem(this.btnLigar, "Ligue para o estabelecimento caso necessário.", "Ok, entendi");
 
@@ -217,6 +217,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_estrela, menu);
         getMenuInflater().inflate(R.menu.menu_status_estabelecimento, menu);
+        getMenuInflater().inflate(R.menu.menu_compartilhar, menu);
         return true;
     }
 
@@ -229,9 +230,23 @@ public class DetalheEstabelecimento extends AppCompatActivity {
             case R.id.action_status_estabelecimento:
                 inflarStatusEstabelecimento();
                 break;
+            case R.id.action_compartilhar:
+                compartilharInformacao();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void compartilharInformacao() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                this.estabelecimento.getNomeFantasia()
+                        + "\n" + "Telefone: " +this.estabelecimento.getTelefone()
+                        + "\n" + this.estabelecimento.getLogradouro() + ", " + this.estabelecimento.getNumero() + ". " + this.estabelecimento.getBairro() + "\n" + this.estabelecimento.getComplemento());
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     private void inflarAvaliacaoEstabelecimento() {

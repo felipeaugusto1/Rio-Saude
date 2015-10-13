@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,6 +83,7 @@ public class AoRedor extends AppCompatActivity {
     private FusedLocationPosition fusedLocationService;
     private LocationManager myLocationManager;
 
+    private Estabelecimento estabelecimentoClicado;
     private DatabaseHandler database;
 
     @Override
@@ -130,26 +132,24 @@ public class AoRedor extends AppCompatActivity {
 
         this.configurarMapa();
 
+        this.atualizarMapa();
+
         this.mapa.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                final Estabelecimento ocorrencia = marcadoresHashMap.get(marker);
+                final Estabelecimento estabelecimento = marcadoresHashMap.get(marker);
 
-                Intent telaDetalheOcorrencia = new Intent(AoRedor.this,
+                Intent telaDetalheEstabelecimento = new Intent(AoRedor.this,
                         DetalheEstabelecimento.class);
 
-                telaDetalheOcorrencia.putExtra("estabelecimento_id",
-                        String.valueOf(ocorrencia.getId()));
-                telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+                telaDetalheEstabelecimento.putExtra("estabelecimento_id",
+                        String.valueOf(estabelecimento.getId()));
+                telaDetalheEstabelecimento.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                startActivity(telaDetalheOcorrencia);
+                startActivity(telaDetalheEstabelecimento);
             }
         });
-
-
-        this.atualizarMapa();
-
     }
 
     private void recuperarPosicaoUsuario() {
@@ -289,6 +289,14 @@ public class AoRedor extends AppCompatActivity {
             startActivity(new Intent(AoRedor.this, MainActivity.class));
         }
 
+        this.mapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                estabelecimentoClicado = marcadoresHashMap.get(marker);
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -333,7 +341,22 @@ public class AoRedor extends AppCompatActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View v = null;
+            try {
+                if (!ValidatorUtil.isNuloOuVazio(estabelecimentoClicado)) {
+                    v = inflater.inflate(R.layout.descricao_estabelecimento_mapa, null);
 
+                    TextView txtNome = (TextView) v.findViewById(R.id.txtNomeFantasia);
+                    TextView txtLogradouro = (TextView) v.findViewById(R.id.txtLogradouro);
+                    TextView txtTelefone = (TextView) v.findViewById(R.id.txtTelefone);
+                    TextView txtStatusAtual = (TextView) v.findViewById(R.id.txtStatusAtual);
+
+                    txtNome.setText(estabelecimentoClicado.getNomeFantasia());
+                    txtLogradouro.setText(estabelecimentoClicado.getLogradouro());
+                    txtTelefone.setText(estabelecimentoClicado.getTelefone());
+                    txtStatusAtual.setText("Situação atual: " +estabelecimentoClicado.getStatusEstabelecimento());
+                }
+            } catch (Exception e) {
+            }
 
             return v;
         }
@@ -407,7 +430,7 @@ public class AoRedor extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                ToastUtil.criarToastCurto(AoRedor.this, distancia_raio+"km");
             }
         });
 

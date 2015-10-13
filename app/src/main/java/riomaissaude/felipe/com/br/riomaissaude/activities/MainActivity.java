@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception ex) {
                 }
 
-
                 /* MarkerOptions markerOption = null;
 
                 markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -216,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
         this.listaEstabelecimentosCopia = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
         this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
 
-        Log.d("estabelecimento", this.listaEstabelecimentos.get(0).toString());
-
         if (ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) || this.listaEstabelecimentos.size() == 0) {
             dialog.setMessage("Carregando marcadores no mapa pela primeira vez, pode levar 1 minuto...");
             try {
@@ -231,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     String[] rowData = line.split(",");
 
                     e.setId(i++);
+                    Log.d("inserindo", i + "");
                     e.setCnes(String.valueOf(rowData[0]));
                     e.setCnpj(String.valueOf(rowData[1]));
                     e.setRazaoSocial(String.valueOf(rowData[2]));
@@ -257,6 +255,8 @@ public class MainActivity extends AppCompatActivity {
                     e.setMedia("0");
                     e.setStatusEstabelecimento(StatusEstabelecimento.SEM_INFORMACAO);
 
+                    this.database.addEstabelecimento(e);
+
                     this.listaEstabelecimentos.add(e);
                 }
 
@@ -265,9 +265,14 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                Log.d("erro", "erro");
+                e.printStackTrace();
             }
 
-            this.database.addEstabelecimentos(this.listaEstabelecimentos);
+            //Log.d("indo salvar", "indo salvar");
+            //this.database.addEstabelecimentos(this.listaEstabelecimentos);
+            //Log.d("indo salvar", "singleton");
             ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
         }
 
@@ -350,7 +355,6 @@ public class MainActivity extends AppCompatActivity {
     private void criarDialogSelecionarBairros() {
         AlertDialog dialog;
 
-        this.bairros.add(0, "Todos");
         final CharSequence[] items = this.bairros.toArray(new CharSequence[this.bairros.size()]);
 
         final ArrayList seletedItems = new ArrayList();
@@ -433,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
             carregarEstabelecimentos();
 
             bairros = database.getAllBairros();
+            bairros.add(0, "Todos");
 
             return "finalizado!!!";
         }
@@ -537,10 +542,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
-        if (ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0) {
+        if (ListaEstabelecimentosSingleton.getInstancia().getLista().size() != 4466) {
             this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
             ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
         }

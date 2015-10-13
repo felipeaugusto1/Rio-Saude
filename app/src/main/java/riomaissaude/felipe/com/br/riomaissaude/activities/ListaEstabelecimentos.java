@@ -179,7 +179,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
             }
         } */
 
-        this.listaEstabelecimentosAux.addAll(this.database.findByNome(q));
+        this.listaEstabelecimentosAux.addAll(this.database.findByNome(StringUtil.retirarAcentosDaPalavra(q)));
 
         this.toolbar.setSubtitle(this.listaEstabelecimentosAux.size() + " estabelecimentos encontrados.");
 
