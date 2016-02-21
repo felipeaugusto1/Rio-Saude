@@ -1,5 +1,19 @@
-# Rio-Saude
+# Rio Saúde
 
-Projeto desenvolvimento por Felipe Augusto Galdino de Almeida para a competição de aplicativos Rio Apps 450.
+Projeto desenvolvido para a competição de aplicativos Rio Apps 450.
+
+O aplicativo Rio Saúde veio para ajudar todos os cidadãos do estado do RJ, que utilizam o serviço de saúde prestado pelo estado, ou privado. É possível realizar avaliações sobre o estabelecimento, para ajudar as pessoas que pretendem ir até ele, e também, visualizar os mais próximos do usuário.
+
+Principais funcionalidades:
+
+- Pode-se utilizá-lo offline, mas precisa estar online para realizar pesquisa por voz, e para realizar avaliações e receber atualizações.
+- Visualizar estabelecimentos de determinados bairros.
+- Visualizar estabelecimentos mais próximos do usuário.
+- Pesquisar estabelecimentos por voz.
+- Avaliar estabelecimento.
+- Informar situação atual do dia.
+- Compartilhar informação com qualquer outro aplicativo do celular, permitindo a integração com os mesmos, como o envio das informações para outras pessoas através do Facebook, WhatsApp, etc.
+
+O Rio Saúde utiliza uma base de dados de 4466 estabelecimentos de saúde fornecidos pelo Data Rio (http://data.rio/). 
 
 Link do aplicativo na Play Store: https://play.google.com/store/apps/details?id=riomaissaude.felipe.com.br.riomaissaude
