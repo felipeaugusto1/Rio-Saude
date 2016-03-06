@@ -1,11 +1,7 @@
-package riomaissaude.felipe.com.br.riomaissaude.models;
+package riomaissaude.felipe.com.br.riosaude.models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
-
-import java.util.Date;
-
-import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 
 /**
  * Created by felipe on 9/13/15.
@@ -41,6 +37,36 @@ public class Estabelecimento implements ClusterItem {
     private String dataAlteracaoStatusEstabelecimento;
 
     public Estabelecimento() {
+    }
+
+    public Estabelecimento(int id, String media, String cnes, String cnpj, String razaoSocial, String nomeFantasia, String logradouro, String numero, String complemento, String bairro, String cep, String telefone, String fax, String email, String latitude, String longitude, String dataAtualizacaoCoordenadas, String codigoEsferaAdministrativa, String esferaAdministrativa, String codigoDaAtividade, String atividadeDestino, String codigoNaturezaOrganizacao, String naturezaOrganizacao, String tipoUnidade, String tipoEstabelecimento, String statusEstabelecimento, String dataAlteracaoStatusEstabelecimento) {
+        this.id = id;
+        this.media = media;
+        this.cnes = cnes;
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.nomeFantasia = nomeFantasia;
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.cep = cep;
+        this.telefone = telefone;
+        this.fax = fax;
+        this.email = email;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.dataAtualizacaoCoordenadas = dataAtualizacaoCoordenadas;
+        this.codigoEsferaAdministrativa = codigoEsferaAdministrativa;
+        this.esferaAdministrativa = esferaAdministrativa;
+        this.codigoDaAtividade = codigoDaAtividade;
+        this.atividadeDestino = atividadeDestino;
+        this.codigoNaturezaOrganizacao = codigoNaturezaOrganizacao;
+        this.naturezaOrganizacao = naturezaOrganizacao;
+        this.tipoUnidade = tipoUnidade;
+        this.tipoEstabelecimento = tipoEstabelecimento;
+        this.statusEstabelecimento = statusEstabelecimento;
+        this.dataAlteracaoStatusEstabelecimento = dataAlteracaoStatusEstabelecimento;
     }
 
     public String getCnes() {

@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.provider;
+package riomaissaude.felipe.com.br.riosaude.provider;
 
 import android.content.SearchRecentSuggestionsProvider;
 

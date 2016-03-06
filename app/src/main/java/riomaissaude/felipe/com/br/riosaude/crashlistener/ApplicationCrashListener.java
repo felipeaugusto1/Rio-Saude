@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.crashlistener;
+package riomaissaude.felipe.com.br.riosaude.crashlistener;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;

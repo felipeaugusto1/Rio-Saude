@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.extras;
+package riomaissaude.felipe.com.br.riosaude.extras;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,15 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.R;
-import riomaissaude.felipe.com.br.riomaissaude.activities.DetalheEstabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.R;
+import riomaissaude.felipe.com.br.riosaude.activities.DetalheEstabelecimento;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
 
 /**
  * Created by felipe on 9/13/15.

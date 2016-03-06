@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.activities;
+package riomaissaude.felipe.com.br.riosaude.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,17 +43,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.R;
-import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
-import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
-import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
+import riomaissaude.felipe.com.br.riosaude.R;
+import riomaissaude.felipe.com.br.riosaude.db.DatabaseHandler;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.models.EstabelecimentoWs;
+import riomaissaude.felipe.com.br.riosaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riosaude.singleton.ListaEstabelecimentosSingleton;
+import riomaissaude.felipe.com.br.riosaude.utils.LeitorArquivoEstabelecimentos;
+import riomaissaude.felipe.com.br.riosaude.utils.PreferenciasUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.ToastUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.ValidatorUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 /**
@@ -84,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Estabelecimento> listaEstabelecimentosCopia;
     private SupportMapFragment mapFragment;
     private GoogleMap mapa;
-    //private HashMap<Marker, Estabelecimento> marcadoresHashMap;
-    //private static ProgressDialog progressDialog;
     private Toolbar toolbar;
     private DatabaseHandler database;
     private ClusterManager<Estabelecimento> clusterManager;
@@ -139,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
     private void adicionarMarcadores() {
         this.mapa.clear();
 
-        //this.marcadoresHashMap = new HashMap<Marker, Estabelecimento>();
         if (!ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) && this.listaEstabelecimentos.size() > 0) {
             for (Estabelecimento e : this.listaEstabelecimentos) {
                 try {
@@ -147,25 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception ex) {
                 }
 
-                /* MarkerOptions markerOption = null;
-
-                markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-
-                Marker marcadorAtual = this.mapa.addMarker(markerOption);
-
-                if (!ValidatorUtil.isNuloOuVazio(marcadorAtual) && !ValidatorUtil.isNuloOuVazio(e)) {
-                    this.marcadoresHashMap.put(marcadorAtual, e);
-
-                }
-
-                marcadorAtual.remove(); */
-
-                //clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new MyCustomAdapterForItems());
-
-                //double offset = e.getId() / 60d;
-                //lat = lat + offset;
-                //lng = lng + offset;
-                //MyItem offsetItem = new MyItem(e.get, lng);
                 clusterManager.addItem(e);
             }
         }
@@ -201,77 +180,27 @@ public class MainActivity extends AppCompatActivity {
     private void configurarMapa() {
         if (ValidatorUtil.isNuloOuVazio(this.mapa)) {
             this.mapa = this.mapFragment.getMap();
-
-            /* if (!ValidatorUtil.isNuloOuVazio(this.mapa)) {
-                this.mapa.setMyLocationEnabled(true);
-            } */
         }
     }
 
     private void carregarEstabelecimentos() {
-        //this.listaEstabelecimentos = this.database.getAllEstabelecimentos();
-        //this.listaEstabelecimentosCopia = this.listaEstabelecimentos;
-
         ListaEstabelecimentosSingleton.getInstancia().setLista(this.database.getAllEstabelecimentos());
         this.listaEstabelecimentosCopia = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
         this.listaEstabelecimentos = ListaEstabelecimentosSingleton.getInstancia().getLista().size() == 0 ? this.database.getAllEstabelecimentos() : ListaEstabelecimentosSingleton.getInstancia().getLista();
 
         if (ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) || this.listaEstabelecimentos.size() == 0) {
             dialog.setMessage("Carregando marcadores no mapa pela primeira vez, pode levar 1 minuto...");
+
+            LeitorArquivoEstabelecimentos leitorArquivoEstabelecimentos = new LeitorArquivoEstabelecimentos(this);
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("estabelecimentos.csv")));
-                String line;
-                int i = 0;
-
-                Estabelecimento e;
-                while ((line = reader.readLine()) != null) {
-                    e = new Estabelecimento();
-                    String[] rowData = line.split(",");
-
-                    e.setId(i++);
-                    //Log.d("inserindo", i + "");
-                    e.setCnes(String.valueOf(rowData[0]));
-                    e.setCnpj(String.valueOf(rowData[1]));
-                    e.setRazaoSocial(String.valueOf(rowData[2]));
-                    e.setNomeFantasia(String.valueOf(rowData[3]));
-                    e.setLogradouro(String.valueOf(rowData[4]));
-                    e.setNumero(String.valueOf(rowData[5]));
-                    e.setComplemento(String.valueOf(rowData[6]));
-                    e.setBairro(String.valueOf(rowData[7]));
-                    e.setCep(String.valueOf(rowData[8]));
-                    e.setTelefone(String.valueOf(rowData[9]));
-                    e.setFax(String.valueOf(rowData[10]));
-                    e.setEmail(String.valueOf(rowData[11]));
-                    e.setLatitude(String.valueOf(rowData[12]).replace("\"", ""));
-                    e.setLongitude(String.valueOf(rowData[13]).replace("\"", ""));
-                    e.setDataAtualizacaoCoordenadas(String.valueOf(rowData[14]));
-                    e.setCodigoEsferaAdministrativa(String.valueOf(rowData[15]));
-                    e.setEsferaAdministrativa(String.valueOf(rowData[16]));
-                    e.setCodigoDaAtividade(String.valueOf(rowData[17]));
-                    e.setAtividadeDestino(String.valueOf(rowData[18]));
-                    e.setCodigoNaturezaOrganizacao(String.valueOf(rowData[19]));
-                    e.setNaturezaOrganizacao(String.valueOf(rowData[20]));
-                    e.setTipoUnidade(String.valueOf(rowData[21]));
-                    e.setTipoEstabelecimento(String.valueOf(rowData[22]));
-                    e.setMedia("0");
-                    e.setStatusEstabelecimento(StatusEstabelecimento.SEM_INFORMACAO);
-
-                    this.database.addEstabelecimento(e);
-
-                    this.listaEstabelecimentos.add(e);
-                }
-
-            } catch (FileNotFoundException e) {
-                ToastUtil.criarToastCurto(this, "Ocorreu um erro na sincronização... ");
-                e.printStackTrace();
+                leitorArquivoEstabelecimentos.lerArquivo();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                Log.d("erro", "erro");
-                e.printStackTrace();
+                ToastUtil.criarToastCurto(this, "Ocorreu um erro na sincronização... ");
             }
 
-            ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
+            this.database.addEstabelecimentos(leitorArquivoEstabelecimentos.getEstabelecimentos());
+
+            ListaEstabelecimentosSingleton.getInstancia().setLista(leitorArquivoEstabelecimentos.getEstabelecimentos());
         }
 
     }
@@ -547,7 +476,12 @@ public class MainActivity extends AppCompatActivity {
             ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
         }
 
-        setUpClusterer();
+        try {
+            setUpClusterer();
+        } catch(Exception e) {
+
+        }
+
     }
 
     private void checagemStatusDiaria() {

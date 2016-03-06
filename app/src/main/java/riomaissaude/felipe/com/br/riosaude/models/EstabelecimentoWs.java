@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.models;
+package riomaissaude.felipe.com.br.riosaude.models;
 
 /**
  * Created by felipe on 9/25/15.

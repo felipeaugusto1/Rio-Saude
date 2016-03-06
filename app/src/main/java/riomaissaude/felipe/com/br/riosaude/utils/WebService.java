@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.utils;
+package riomaissaude.felipe.com.br.riosaude.utils;
 
 /**
  * Created by felipe on 9/25/15.

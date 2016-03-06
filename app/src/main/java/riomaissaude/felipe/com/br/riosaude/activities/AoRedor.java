@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.activities;
+package riomaissaude.felipe.com.br.riosaude.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,15 +13,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,7 +31,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
-import com.loopj.android.http.RequestParams;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
@@ -42,12 +38,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.R;
-import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
-import riomaissaude.felipe.com.br.riomaissaude.gps.FusedLocationPosition;
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
+import riomaissaude.felipe.com.br.riosaude.R;
+import riomaissaude.felipe.com.br.riosaude.db.DatabaseHandler;
+import riomaissaude.felipe.com.br.riosaude.gps.FusedLocationPosition;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.utils.ToastUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.ValidatorUtil;
 
 /**
  * Activity responsável por exibir a localização do usuário, e os estabelecimentos

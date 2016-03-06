@@ -1,11 +1,11 @@
-package riomaissaude.felipe.com.br.riomaissaude.singleton;
+package riomaissaude.felipe.com.br.riosaude.singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riosaude.utils.ValidatorUtil;
 
 /**
  * Classe que utiliza o padrão de projeto

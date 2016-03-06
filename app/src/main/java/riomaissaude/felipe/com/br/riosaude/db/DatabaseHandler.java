@@ -1,20 +1,17 @@
-package riomaissaude.felipe.com.br.riomaissaude.db;
+package riomaissaude.felipe.com.br.riosaude.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.wifi.WifiConfiguration;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
-import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riosaude.utils.StringUtil;
 
 /**
  *
@@ -25,7 +22,7 @@ import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "riomaissaude";
+    public static final String DATABASE_NAME = "riomaissaude";
 
     private static final String TABLE_ESTABELECIMENTO = "estabelecimento";
 

@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.activities;
+package riomaissaude.felipe.com.br.riosaude.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -43,15 +43,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.R;
-import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
-import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
-import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
+import riomaissaude.felipe.com.br.riosaude.R;
+import riomaissaude.felipe.com.br.riosaude.db.DatabaseHandler;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.models.EstabelecimentoWs;
+import riomaissaude.felipe.com.br.riosaude.models.StatusEstabelecimento;
+import riomaissaude.felipe.com.br.riosaude.singleton.ListaEstabelecimentosSingleton;
+import riomaissaude.felipe.com.br.riosaude.utils.PreferenciasUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.ToastUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.ValidatorUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
@@ -181,10 +182,6 @@ public class DetalheEstabelecimento extends AppCompatActivity {
     private void configurarMapa() {
         if (this.mapa == null) {
             this.mapa = this.mapFragment.getMap();
-
-            /* if (this.mapa != null) {
-                this.mapa.setMyLocationEnabled(true);
-            } */
         }
     }
 
@@ -273,7 +270,7 @@ public class DetalheEstabelecimento extends AppCompatActivity {
                         if (isConectado())
                             votarWs();
                         else
-                            Toast.makeText(DetalheEstabelecimento.this, "Você precisa estar conectado a internet para avaliar um estabelecimento.", Toast.LENGTH_LONG).show();
+                            ToastUtil.criarToastLongo(DetalheEstabelecimento.this, "Você precisa estar conectado a internet para avaliar um estabelecimento.");
                     }
                 });
 

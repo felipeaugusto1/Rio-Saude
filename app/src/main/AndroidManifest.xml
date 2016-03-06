@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="riomaissaude.felipe.com.br.riomaissaude" >
+    package="riomaissaude.felipe.com.br.riosaude" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -12,21 +12,21 @@
         android:required="true" />
 
     <application
-        android:name=".crashlistener.ApplicationCrashListener"
+        android:name="riomaissaude.felipe.com.br.riosaude.crashlistener.ApplicationCrashListener"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <provider
-            android:name=".provider.SearchableProvider"
-            android:authorities="riomaissaude.felipe.com.br.riomaissaude.provider.SearchableProvider" />
+            android:name="riomaissaude.felipe.com.br.riosaude.provider.SearchableProvider"
+            android:authorities="riomaissaude.felipe.com.br.riosaude.provider.SearchableProvider" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyChhVklnMqKw_oio8LkGwzw4oeg8dEhUek" />
+            android:value="AIzaSyAu1VxxUAc0BZ-Pd65b-m5By17sRGPRarc" />
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="riomaissaude.felipe.com.br.riosaude.activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,10 +35,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.DetalheEstabelecimento" />
+        <activity android:name="riomaissaude.felipe.com.br.riosaude.activities.DetalheEstabelecimento" />
 
         <activity
-            android:name=".activities.ListaEstabelecimentos"
+            android:name="riomaissaude.felipe.com.br.riosaude.activities.ListaEstabelecimentos"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -50,7 +50,7 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <activity android:name=".activities.AoRedor" />
+        <activity android:name="riomaissaude.felipe.com.br.riosaude.activities.AoRedor" />
 
     </application>
 

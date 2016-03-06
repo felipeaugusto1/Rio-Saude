@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.activities;
+package riomaissaude.felipe.com.br.riosaude.activities;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -18,38 +18,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import riomaissaude.felipe.com.br.riomaissaude.R;
-import riomaissaude.felipe.com.br.riomaissaude.db.DatabaseHandler;
-import riomaissaude.felipe.com.br.riomaissaude.extras.RecyclerViewAdapterEstabelecimentos;
-import riomaissaude.felipe.com.br.riomaissaude.models.Estabelecimento;
-import riomaissaude.felipe.com.br.riomaissaude.models.EstabelecimentoWs;
-import riomaissaude.felipe.com.br.riomaissaude.provider.SearchableProvider;
-import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
-import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
-import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
+import riomaissaude.felipe.com.br.riosaude.R;
+import riomaissaude.felipe.com.br.riosaude.db.DatabaseHandler;
+import riomaissaude.felipe.com.br.riosaude.extras.RecyclerViewAdapterEstabelecimentos;
+import riomaissaude.felipe.com.br.riosaude.models.Estabelecimento;
+import riomaissaude.felipe.com.br.riosaude.provider.SearchableProvider;
+import riomaissaude.felipe.com.br.riosaude.singleton.ListaEstabelecimentosSingleton;
+import riomaissaude.felipe.com.br.riosaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riosaude.utils.ToastUtil;
 
 /**
  * Activity responsável por listar todos os estabelecimentos.
@@ -149,7 +137,6 @@ public class ListaEstabelecimentos extends AppCompatActivity {
             String q = intent.getStringExtra(SearchManager.QUERY);
 
             filtrarEstabelecimentos(q);
-            //new PesquisarEstabelecimentos().execute(q);
             this.toolbar.setTitle(q);
 
             SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY, SearchableProvider.MODE);
@@ -165,19 +152,6 @@ public class ListaEstabelecimentos extends AppCompatActivity {
 
     private void filtrarEstabelecimentos(String q) {
         this.listaEstabelecimentosAux.clear();
-
-        /* for (Estabelecimento estabelecimento : ListaEstabelecimentosSingleton.getInstancia().getLista()) {
-            if (StringUtil.retirarAcentosDaPalavra(estabelecimento.getNomeFantasia()).toLowerCase().contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
-                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getBairro().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
-                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getComplemento().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
-                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getLogradouro().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
-                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getRazaoSocial().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
-                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getTipoEstabelecimento().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))
-                    || StringUtil.retirarAcentosDaPalavra(estabelecimento.getAtividadeDestino().toLowerCase()).contains(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))) {
-                Log.d("adding", estabelecimento.getRazaoSocial());
-                this.listaEstabelecimentosAux.add(estabelecimento);
-            }
-        } */
 
         this.listaEstabelecimentosAux.addAll(this.database.findByNome(StringUtil.retirarAcentosDaPalavra(q)));
 
@@ -241,7 +215,7 @@ public class ListaEstabelecimentos extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_delete) {
             SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY, SearchableProvider.MODE);
             searchRecentSuggestions.clearHistory();
-            Toast.makeText(this, "Historico excluído com sucesso.", Toast.LENGTH_SHORT).show();
+            ToastUtil.criarToastCurto(this, "Historico excluído com sucesso.");
         }
         return super.onOptionsItemSelected(item);
     }

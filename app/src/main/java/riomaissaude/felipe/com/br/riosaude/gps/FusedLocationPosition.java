@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.gps;
+package riomaissaude.felipe.com.br.riosaude.gps;
 
 import android.app.Activity;
 import android.location.Location;

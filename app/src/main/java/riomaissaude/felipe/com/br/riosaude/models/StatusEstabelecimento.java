@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.models;
+package riomaissaude.felipe.com.br.riosaude.models;
 
 public class StatusEstabelecimento {
 

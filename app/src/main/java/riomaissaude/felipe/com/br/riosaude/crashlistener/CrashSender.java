@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.crashlistener;
+package riomaissaude.felipe.com.br.riosaude.crashlistener;
 
 import org.acra.ReportField;
 import org.acra.collector.CrashReportData;
@@ -10,7 +10,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
+import riomaissaude.felipe.com.br.riosaude.utils.WebService;
 
 /**
  * Classe responsável por enviar um erro do aplicativo no dispositivo, para o WS.

@@ -1,4 +1,4 @@
-package riomaissaude.felipe.com.br.riomaissaude.utils;
+package riomaissaude.felipe.com.br.riosaude.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
