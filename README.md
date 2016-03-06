@@ -16,4 +16,4 @@ Principais funcionalidades:
 
 O Rio Saúde utiliza uma base de dados de 4466 estabelecimentos de saúde fornecidos pelo Data Rio (http://data.rio/). 
 
-Link do aplicativo na Play Store: https://play.google.com/store/apps/details?id=riomaissaude.felipe.com.br.riomaissaude
+Link do aplicativo na Play Store: https://play.google.com/store/apps/details?id=riomaissaude.felipe.com.br.riosaude
