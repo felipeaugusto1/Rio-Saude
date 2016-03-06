@@ -51,6 +51,7 @@ import riomaissaude.felipe.com.br.riomaissaude.models.StatusEstabelecimento;
 import riomaissaude.felipe.com.br.riomaissaude.singleton.ListaEstabelecimentosSingleton;
 import riomaissaude.felipe.com.br.riomaissaude.utils.PreferenciasUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.StringUtil;
+import riomaissaude.felipe.com.br.riomaissaude.utils.ToastUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.ValidatorUtil;
 import riomaissaude.felipe.com.br.riomaissaude.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     String[] rowData = line.split(",");
 
                     e.setId(i++);
-                    Log.d("inserindo", i + "");
+                    //Log.d("inserindo", i + "");
                     e.setCnes(String.valueOf(rowData[0]));
                     e.setCnpj(String.valueOf(rowData[1]));
                     e.setRazaoSocial(String.valueOf(rowData[2]));
@@ -261,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (FileNotFoundException e) {
-                Toast.makeText(this, "Ocorreu um erro na sincronização... ", Toast.LENGTH_SHORT).show();
+                ToastUtil.criarToastCurto(this, "Ocorreu um erro na sincronização... ");
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -270,9 +271,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            //Log.d("indo salvar", "indo salvar");
-            //this.database.addEstabelecimentos(this.listaEstabelecimentos);
-            //Log.d("indo salvar", "singleton");
             ListaEstabelecimentosSingleton.getInstancia().setLista(this.listaEstabelecimentos);
         }
 
@@ -364,8 +362,6 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Selecione o bairro");
         builder.setMultiChoiceItems(items, null,
                 new DialogInterface.OnMultiChoiceClickListener() {
-                    // indexSelected contains the index of item (of which
-                    // checkbox checked)
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int indexSelected, boolean isChecked) {
@@ -449,8 +445,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String resultado) {
-            setUpClusterer();
-            dialog.dismiss();
+            try {
+                setUpClusterer();
+                dialog.dismiss();
+            } catch (Exception e) {
+
+            }
+
         }
     }
 
@@ -470,18 +471,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             for (EstabelecimentoWs e: listaEstabelecimentoWs) {
-                Log.d("Indo atualizar", e.getId() + " - " + e.getMedia());
-                /* for (Estabelecimento es: ListaEstabelecimentosSingleton.getInstancia().getLista()) {
-                    if (e.getId() == es.getId()) {
-                        es.setMedia(String.valueOf(e.getMedia()));
-                        es.setStatusEstabelecimento(e.getStatusEstabelecimento());
-                    }
-
-                } */
                 database.updateAvaliacaoEstabelecimento(e.getId(), e.getMedia(), e.getStatusEstabelecimento());
             }
 
-            //database.updateEstabelecimentos(listaEstabelecimentoWs);
             return "Finalizado!";
         }
 
