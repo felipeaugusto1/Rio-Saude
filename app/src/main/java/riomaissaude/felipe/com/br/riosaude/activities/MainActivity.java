@@ -140,11 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (!ValidatorUtil.isNuloOuVazio(this.listaEstabelecimentos) && this.listaEstabelecimentos.size() > 0) {
             for (Estabelecimento e : this.listaEstabelecimentos) {
-                try {
-                    LatLng c = new LatLng(Double.parseDouble(e.getLatitude()), Double.parseDouble(e.getLongitude()));
-                } catch (Exception ex) {
-                }
-
                 clusterManager.addItem(e);
             }
         }
@@ -285,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         final CharSequence[] items = this.bairros.toArray(new CharSequence[this.bairros.size()]);
 
         final ArrayList seletedItems = new ArrayList();
-        final ArrayList<String> itensSelecionados = new ArrayList<String>();
+        final ArrayList<String> itensSelecionados = new ArrayList<>();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Selecione o bairro");
@@ -316,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (listaEstabelecimentos.size() != 4466)
                                         listaEstabelecimentos = listaEstabelecimentosCopia;
                                 } else {
-                                    listaEstabelecimentos = new ArrayList<Estabelecimento>();
+                                    listaEstabelecimentos = new ArrayList<>();
                                     for (String itemSelecionado : itensSelecionados) {
                                         for (Estabelecimento e : ListaEstabelecimentosSingleton.getInstancia().getLista()) {
                                             if (StringUtil.retirarAcentosDaPalavra(itemSelecionado.trim()).equalsIgnoreCase(StringUtil.retirarAcentosDaPalavra(e.getBairro())))

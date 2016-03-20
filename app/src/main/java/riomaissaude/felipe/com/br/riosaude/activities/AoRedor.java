@@ -1,14 +1,19 @@
 package riomaissaude.felipe.com.br.riosaude.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -66,13 +71,11 @@ public class AoRedor extends AppCompatActivity {
     private Toolbar toolbar;
 
     private SupportMapFragment mapFragment;
-    private LocationRequest locationRequest;
     private GoogleMap mapa;
 
     private static ProgressDialog progressDialog;
     private List<Estabelecimento> listaOcorrencias;
     private HashMap<Marker, Estabelecimento> marcadoresHashMap;
-    private static final long ONE_MIN = 1000 * 60;
 
     private int distancia_raio = 1000;
     private Location localizacaoUsuario;
@@ -82,6 +85,8 @@ public class AoRedor extends AppCompatActivity {
     private Estabelecimento estabelecimentoClicado;
     private DatabaseHandler database;
 
+    private final int PERMISSAO_ACESSO_FINE_LOCATION = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,16 +94,24 @@ public class AoRedor extends AppCompatActivity {
 
         this.database = new DatabaseHandler(getApplicationContext());
 
-        this.fusedLocationService = new FusedLocationPosition(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                // Solicita permissão
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSAO_ACESSO_FINE_LOCATION);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                this.fusedLocationService = new FusedLocationPosition(this);
+                recuperarPosicaoUsuario();
+            }
+        } else {
+            this.fusedLocationService = new FusedLocationPosition(this);
+            this.myLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        this.myLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (!this.myLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            alertaGPSDesativado();
-            ToastUtil.criarToastLongo(AoRedor.this, getResources().getString(R.string.msgAtivarGps));
-        } else
-            recuperarPosicaoUsuario();
-
+            if (!this.myLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                alertaGPSDesativado();
+                ToastUtil.criarToastLongo(AoRedor.this, getResources().getString(R.string.msgAtivarGps));
+            } else
+                recuperarPosicaoUsuario();
+        }
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         this.toolbar.setTitle(getResources().getString(R.string.tela_ao_redor));
@@ -172,10 +185,6 @@ public class AoRedor extends AppCompatActivity {
     private void configurarMapa() {
         if (ValidatorUtil.isNuloOuVazio(this.mapa)) {
             this.mapa = this.mapFragment.getMap();
-
-            /* if (!ValidatorUtil.isNuloOuVazio(this.mapa)) {
-                this.mapa.setMyLocationEnabled(true);
-            } */
         }
     }
 
@@ -307,7 +316,6 @@ public class AoRedor extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        this.navigationDrawer.setSelection(0);
         super.onBackPressed();
     }
 
@@ -452,4 +460,20 @@ public class AoRedor extends AppCompatActivity {
         customDialog.show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case PERMISSAO_ACESSO_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.fusedLocationService = new FusedLocationPosition(this);
+                    recuperarPosicaoUsuario();
+                } else {
+                    ToastUtil.criarToastLongoCentralizado(this, "Desculpa, mas precisamos de acesso ao GPS para utilizar esta funcionalidade :(");
+                }
+                return;
+            }
+
+        }
+    }
 }
