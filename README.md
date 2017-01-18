@@ -19,4 +19,4 @@ O Rio Saúde utiliza uma base de dados de 4466 estabelecimentos de saúde fornec
 Link do aplicativo na Play Store: https://play.google.com/store/apps/details?id=riomaissaude.felipe.com.br.riosaude
 
 Project made to Rio Apps 450 Hackathon (2015).
-The App Rio Saúde (Rio Health) looks forward to help the people from State of Rio de Janeiro, to see the closestes medical clinic or hospitals, based on the place the user is. It is also possible to evaluate these hospitals, by saying if it is working well, taking too much time to be attended to, etc.
+The App Rio Saúde (Rio Health) looks forward to help the people from State of Rio de Janeiro, to see the closest medical clinic or hospitals, based on the place the user is. It is also possible to evaluate these hospitals, by saying if it is working well, taking too much time to be attended to, etc.
